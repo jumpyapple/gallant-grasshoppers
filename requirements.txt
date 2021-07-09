@@ -1,0 +1,5 @@
+# This file contains all dependencies need to run the program
+# Remind to install dependencies using pip to do 
+# `pip install -r requirements.txt` or to specify a version of python `python3 -m pip install -r requirements.txt`
+
+

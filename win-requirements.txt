@@ -1,0 +1,8 @@
+# List of windows specific dependencies needed to run the program
+# Calling the file as `pip install -r win-requirements.txt` will install all dependencies in requirements.txt and here
+
+-r requirements.txt
+
+windows-curses==2.2.0
+
+
