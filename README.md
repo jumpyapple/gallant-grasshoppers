@@ -1,7 +1,7 @@
-#Think Inside the Box
+# Think Inside the Box
 
 
-###Team Members:
+### Team Members:
 - **Burned**
 - **Breno Cabral**
 - **jumpyapple**
