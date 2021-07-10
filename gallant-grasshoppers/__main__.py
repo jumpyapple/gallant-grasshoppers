@@ -8,7 +8,6 @@ def main() -> None:
     Starts up main function
 
     :return:
-        None
     """
     while True:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
