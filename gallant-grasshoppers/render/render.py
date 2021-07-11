@@ -1,5 +1,5 @@
-from blessed import Terminal
 
+from .globals import get_terminal as terminal
 from .styles.border import draw
 
 
@@ -7,9 +7,9 @@ class Component:
     """Components are the main way to draw to the screen of the application"""
 
     def __init__(
-            self, terminal: Terminal, window: object, width: int, height: int,
+            self, window: object, width: int, height: int,
             begin_x: int, begin_y: int, data: any = None):
-        self.terminal = terminal
+        self.terminal = terminal()
         self.height = height
         self.width = width
         self.begin_y = begin_y
