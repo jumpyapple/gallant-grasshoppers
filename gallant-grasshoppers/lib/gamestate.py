@@ -34,7 +34,7 @@ class GameState:
             with open(self.save_location, "w") as File:
                 File.write(save_data_as_string)
         else:
-            with open(self.save_location, 'r') as File:
+            with open(self.save_location, "r") as File:
                 save_data_as_string = File.read()
 
         # Now load the data into the object as a dictionary
