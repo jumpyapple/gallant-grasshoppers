@@ -1,0 +1,27 @@
+[
+    {
+      "ID": "GAME_START",
+      "DISPLAY_TEXT": "Congats, you launched it",
+      "CONDITION": {
+        "type": "CURRENCY",
+        "amount": 100
+      }
+    },
+    {
+        "ID": "BORK",
+        "DISPLAY_TEXT": "Boxes have made them sentient, what a joy, more love boxes",
+        "CONDITION":{
+            "type": "GENERATOR",
+            "amount": 1,
+            "generator_id": "BOXER_DOG"
+        }
+    },
+    {
+      "ID": "BOXY",
+      "DISPLAY_TEXT": "You looking nice with all those boxes there",
+      "CONDITION": {
+        "type": "CURRENCY",
+        "amount": 100
+      }
+    }
+  ]
