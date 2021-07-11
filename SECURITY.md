@@ -8,4 +8,4 @@ As of July 10, 2021, all versions are being supported with security updates
 
 When you find a security vulnerability:
 
-Find the most up to date contact information [here](https://tyler-richards.com/contact)
+Please open an issue on the github repository: https://github.com/StackedQueries/gallant-grasshoppers/issues
