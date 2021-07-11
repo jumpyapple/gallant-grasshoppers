@@ -55,4 +55,3 @@ class GameState:
 
     def getAchievements(self):
         return self.state["achievements"]
-

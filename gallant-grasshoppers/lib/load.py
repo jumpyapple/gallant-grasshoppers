@@ -1,11 +1,9 @@
 from os import path
 
-
 UPGRADES_FILE_LOCATION = "../static/upgrades.json"
 
-
 """
-Goal is to create a generic loader so that once the game loop has started we can have access to all of the 
+Goal is to create a generic loader so that once the game loop has started we can have access to all of the
 upgrades, achievements, generators in the game in a single format
 """
 
@@ -15,7 +13,6 @@ class Loader:
         self.upgrades = []
         self.achievements = []
         self.generators = []
-
 
     def loadUpgrades(self, filePath):
         if not path.exists(filePath):
