@@ -27,7 +27,8 @@ class Component:
             Where the top left starts on the Y axis
             (Default is 0)
         data : any
-            Whatever you want the data to be inside. Could be components, text, ints, etc
+            Whatever you want the data to be inside. Could be components, strs, ints, etc
+            IF STR: put in list to be displayed on single line. i.e. ["Hello World!"]
             (Default is None)
         """
         self.terminal = terminal()
@@ -46,6 +47,10 @@ class Component:
         for c, line in enumerate(self.data):
             text += (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)) + str(line)
         return draw(self.terminal, self) + text
+
+    def set_styles(self) -> None:
+        """Sets styles for a component"""
+        pass
 
     def set_data(self, data: any = None) -> bool:
         """Sets data for to be displayed in component"""
