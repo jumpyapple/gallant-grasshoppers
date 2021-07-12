@@ -15,12 +15,14 @@
       "ID": "BOXER_DOG",
       "DESCRIPTION": "Woof woof... boof... bof.. box... boxes.. I want to make boxes...",
       "BPS": 15,
-      "COST": 200
+      "COST": 200,
+      "UNLOCK_ON": "AMAZON_WORKER"
     },
     {
       "ID": "MIKE_TYSON",
-      "DESCRIPTION": "I used to Box but now I like grabbing two boxes and making them kith",
+      "DESCRIPTION": "Boxing using to run my life, now I run a life of boxes",
       "BPS": 100,
-      "COST": 5000
+      "COST": 5000, 
+      "UNLOCK_ON": "KINDERGARTEN_CLASS"
     }
   ]
