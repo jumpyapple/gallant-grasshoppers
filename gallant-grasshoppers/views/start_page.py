@@ -1,6 +1,6 @@
 import time
 
-from ..render import get_term as terminal
+from blessed import Terminal
 
 boxer_logo = [
     ".----------------.  .----------------.  .----------------.  .----------------.  .----------------.",
@@ -21,7 +21,7 @@ def print_start_page(sig: int = None) -> None:
     """Creates start page, can be called from signal module and directly"""
     if sig is not None:
         time.sleep(.05)
-    term = terminal()
+    term = Terminal()
     print(term.home + term.clear + term.move_y(term.height // 5))
     for i, j in enumerate(boxer_logo):
         term.move_y((term.height // 3)-i)
