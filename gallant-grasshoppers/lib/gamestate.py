@@ -1,5 +1,6 @@
-from os import path
 import json
+from os import path
+
 from .load import Loader
 
 SAVE_TEMPLATE = "../static/save_template.json"
@@ -8,12 +9,12 @@ DEFAULT_SAVE_NAME = "save.json"
 DEFAULT_SAVE_LOCATION = "../saves"
 
 # Constants for accessing the game data
-CASH = 'cash'
-GENERATORS = 'generators'
-UPGRADES = 'upgrades'
-ACHIEVEMENTS = 'achievements'
+CASH = "cash"
+GENERATORS = "generators"
+UPGRADES = "upgrades"
+ACHIEVEMENTS = "achievements"
 
-
+DEFAULT_TICK_TIME = 1
 
 """
 TODO
@@ -21,7 +22,10 @@ TODO
 * There has to be a way to also save generators into the files
 * ReIndex anything that has an ID so that it's easier to access it
 """
+
+
 class GameState:
+    """Class to manage everything relating to game specific data v1 implementation"""
 
     def __init__(self, save_name: str = None, save_location: str = None):
 
@@ -32,24 +36,21 @@ class GameState:
         # Here is the current object of the game
         self.state = self.loadGame(save_name, save_location)
 
-        self.modifiers = None # With time do something to recalculate the modifiers for te game state
+        self.modifiers = None  # With time do something to recalculate the modifiers for te game state
 
         # Here are all of the ones in the game
         self.available_upgrades = loader.upgrades
         self.available_achievements = loader.achievements
         self.available_generators = loader.generators
 
-
-
-
-    def saveGame(self):
+    def saveGame(self) -> None:
+        """Convert state into a json string and save it to a file"""
         state_as_string = json.dumps(self.state)
-        with open(self.save_location, 'w') as File:
+        with open(self.save_location, "w") as File:
             File.write(state_as_string)
 
-    def loadGame(self, save_name: str, save_location: str):
-        # Check if the a location and name other was provided for the save
-        # If not default
+    def loadGame(self, save_name: str, save_location: str) -> None:
+        """Check if a save already exists, if not create a clean one for first boot"""
         self.save_location = (
             f"{save_location}/{save_name}"
             if save_name is not None and save_location is not None
@@ -70,24 +71,47 @@ class GameState:
 
         # Now load the data into the object as a dictionary
         self.state = json.loads(save_data_as_string)
-        print(self.state)
+        # print(self.state)
 
-    def buyUpgrade(self, upgrade_id: str):
+    def buyUpgrade(self, upgrade_id: str) -> None:
+        """*Given the upgrade id of an upgrade decrease the cash of the player adding upgrade to their list*"""
         # TODO index the available instead so that you don't need to do a search every time
-        upgrade_to_buy = next(upgrade for upgrade in self.available_upgrades if upgrade["ID"] == upgrade_id)
+        upgrade_to_buy = next(
+            (
+                upgrade
+                for upgrade in self.available_upgrades
+                if upgrade["ID"] == upgrade_id
+            )
+        )
+        # TODO maybe change this into have a more intuitive location for cost
+        cost = next(
+            (
+                requirement.get("amount")
+                for requirement in upgrade_to_buy["REQUIREMENTS"]
+                if requirement["type"] == "CURRENCY"
+            ),
+            0,
+        )
+
+        self.changeCash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
 
     def changeCash(self, amount: int) -> None:
+        """Function to be used when changing the users cash, use negative value to represent cost"""
         self.state[CASH] = self.state[CASH] + amount
 
     def getCash(self) -> int:
+        """Getter function for cash"""
         return self.state[CASH]
 
-    def getGenerators(self):
+    def getGenerators(self) -> list:
+        """Getter functon for generators list that the user unlocked"""
         return self.state[GENERATORS]
 
-    def getUpgrades(self):
+    def getUpgrades(self) -> list:
+        """Getter functon for upgrades list that the user unlocked"""
         return self.state[UPGRADES]
 
-    def getAchievements(self):
+    def getAchievements(self) -> list:
+        """Getter functon for achievements list that the user unlocked"""
         return self.state[ACHIEVEMENTS]
