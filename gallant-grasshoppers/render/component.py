@@ -1,5 +1,5 @@
 
-from .styles.border import draw
+from .styleTypes import border
 from .utils.terminal import get_term as terminal
 
 
@@ -8,7 +8,7 @@ class Component:
 
     def __init__(
             self, window: object = terminal(), width: int = 5, height: int = 5,
-            begin_x: int = 0, begin_y: int = 0, data: any = None):
+            begin_x: int = 0, begin_y: int = 0, data: any = None, styles: list = None):
         """
         Parameters
 
@@ -37,20 +37,26 @@ class Component:
         self.begin_y = begin_y
         self.begin_x = begin_x
         self.data = data
+        self.styles = styles
         if window:
             self.window = window
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
 
-    def __repr__(self):
+    @classmethod
+    def get_data(cls, comp: object) -> str:
+        """Parses component data list into str to be printed"""
         text = ""
-        for c, line in enumerate(self.data):
-            text += (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)) + str(line)
-        return draw(self.terminal, self) + text
+        for c, line in enumerate(comp.data):
+            text += (comp.terminal.move_xy(comp.begin_x, comp.begin_y + c)) + str(line)
+        return text
 
-    def set_styles(self) -> None:
+    def __repr__(self):
+        return border(self) + Component.get_data(self)
+
+    def set_styles(self, styles: list) -> None:
         """Sets styles for a component"""
-        pass
+        self.styles = styles
 
     def set_data(self, data: any = None) -> bool:
         """Sets data for to be displayed in component"""
