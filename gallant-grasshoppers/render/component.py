@@ -42,8 +42,10 @@ class Component:
             self.begin_y += window.begin_y
 
     def __repr__(self):
-        return draw(self.terminal, self) + (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1)
-                                            + str(self.data))
+        text = ""
+        for c, line in enumerate(self.data):
+            text += (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)) + str(line)
+        return draw(self.terminal, self) + text
 
     def set_data(self, data: any = None) -> bool:
         """Sets data for to be displayed in component"""
