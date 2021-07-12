@@ -1,5 +1,4 @@
 # from render.component import Component
-import signal
 
 import render as r
 import views as v
@@ -12,8 +11,7 @@ def main() -> None:
     while True:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             v.start_page.print_start_page()
-            signal.signal(signal.SIGWINCH, v.start_page.print_start_page)
-            key_press = term.inkey()
+            key_press = term.inkey(timeout=.5)
         if key_press == " ":
             break
 
