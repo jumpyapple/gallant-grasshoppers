@@ -1,5 +1,7 @@
 import time
+from typing import Optional
 
+from . import BasePage
 from blessed import Terminal
 
 boxer_logo = [
@@ -13,19 +15,28 @@ boxer_logo = [
     "| |  |_______/   | || |   `.____.'   | || | |____||____| | || | |_________|  | || | |____| |___| | |",
     "| |              | || |              | || |              | || |              | || |              | |",
     "| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |",
-    "'----------------'  '----------------'  '----------------'  '----------------'  '----------------'"
+    "'----------------'  '----------------'  '----------------'  '----------------'  '----------------'",
 ]
 
 
-def print_start_page(sig: int = None) -> None:
-    """Creates start page, can be called from signal module and directly"""
-    if sig is not None:
-        time.sleep(.05)
-    term = Terminal()
-    print(term.home + term.clear + term.move_y(term.height // 5))
-    for i, j in enumerate(boxer_logo):
-        term.move_y((term.height // 3)-i)
-        print(term.sandybrown(term.center(j)))
-    print(term.move_y(int(term.height - 1)))
-    print(term.white(term.center("[PRESS SPACE TO CONTINUE]")))
-    time.sleep(.05)
+class StartPage(BasePage):
+    def __init__(self, state, term, sig: int = None):
+        super().__init__(state, term)
+        self.sig = sig
+
+    def render(self):
+        """Creates start page, can be called from signal module and directly"""
+        if self.sig is not None:
+            time.sleep(0.05)
+        print(
+            self.term.home + self.term.clear + self.term.move_y(self.term.height // 5)
+        )
+        for i, j in enumerate(boxer_logo):
+            self.term.move_y((self.term.height // 3) - i)
+            print(self.term.sandybrown(self.term.center(j)))
+        print(self.term.move_y(int(self.term.height - 1)))
+        print(self.term.white(self.term.center("[PRESS SPACE TO CONTINUE]")))
+        time.sleep(0.05)
+
+    def handle_input(self, key: str) -> None:
+        return None
