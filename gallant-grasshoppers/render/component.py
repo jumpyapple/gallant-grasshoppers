@@ -45,9 +45,10 @@ class Component:
 
     def __repr__(self):
         text = ""
-        keys = self.styles.keys()
-        for key in keys:
-            text += styles[key](self, self.styles[key])
+        if self.styles:
+            keys = self.styles.keys()
+            for key in keys:
+                text += styles[key](self, self.styles[key])
         for c, line in enumerate(self.data):
             text += (self.terminal.move_xy(self.begin_x, self.begin_y + c)) + str(line)
         return text
