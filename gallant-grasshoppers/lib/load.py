@@ -1,4 +1,5 @@
 from os import path
+import json
 
 UPGRADES_FILE_LOCATION = "../static/upgrades.json"
 ACHIEVEMENTS_FILE_LOCATION = "../static/achievements.json"
@@ -17,8 +18,8 @@ class Loader:
     def __init__(
         self,
         upgradesPath: str = UPGRADES_FILE_LOCATION,
-        achievementsPath: str = None,
-        generatorsPath: str = None,
+        achievementsPath: str = ACHIEVEMENTS_FILE_LOCATION,
+        generatorsPath: str = UPGRADES_FILE_LOCATION,
     ) -> None:
         self.upgrades = self.loadJSON(upgradesPath)
         self.achievements = self.loadJSON(achievementsPath)
@@ -33,9 +34,9 @@ class Loader:
         with open(filePath, "r") as File:
             loaded_json = File.read()
 
-        return loaded_json
+        return json.loads(loaded_json)
 
 
 if __name__ == "__main__":
     static_data = Loader()
-    print(static_data.upgrades)
+    # print(static_data.upgrades)

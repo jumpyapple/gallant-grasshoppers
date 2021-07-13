@@ -1,7 +1,7 @@
 import json
 from os import path
 
-from .load import Loader
+from load import Loader
 
 SAVE_TEMPLATE = "../static/save_template.json"
 
@@ -70,8 +70,15 @@ class GameState:
                 save_data_as_string = File.read()
 
         # Now load the data into the object as a dictionary
-        self.state = json.loads(save_data_as_string)
-        # print(self.state)
+        return json.loads(save_data_as_string)
+
+    def changeCash(self, amount: int) -> bool:
+        """Function to be used when changing the users cash, use negative value to represent cost"""
+        if (self.getCash() + amount) < 0:
+            return False
+
+        self.state[CASH] = self.state[CASH] + amount
+        return True
 
     def buyUpgrade(self, upgrade_id: str) -> None:
         """*Given the upgrade id of an upgrade decrease the cash of the player adding upgrade to their list*"""
@@ -93,12 +100,18 @@ class GameState:
             0,
         )
 
+        #  TODO fail if the player does not have enough cash
+
         self.changeCash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
 
-    def changeCash(self, amount: int) -> None:
-        """Function to be used when changing the users cash, use negative value to represent cost"""
-        self.state[CASH] = self.state[CASH] + amount
+    def makeBox(self) -> None:
+        """Function will make a single box"""
+        self.state[CASH] = self.state[CASH] + 1
+
+    def getState(self) -> None:
+        """Get the current state of the game as s dict"""
+        return self.state
 
     def getCash(self) -> int:
         """Getter function for cash"""
