@@ -1,9 +1,13 @@
 
-from blessed import Terminal
+from ..utils.terminal import Terminal
 
 
-def border(component: object) -> str:
+def border(component: object, param: any = None) -> str:
     """Draws border around component"""
+    # height = 0
+    # width = 0
+    if not param:
+        return ""
     terminal = Terminal()
     border = ""
     for i in range(component.height):
