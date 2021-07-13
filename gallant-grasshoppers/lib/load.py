@@ -1,5 +1,5 @@
-from os import path
 import json
+from os import path
 
 UPGRADES_FILE_LOCATION = "../static/upgrades.json"
 ACHIEVEMENTS_FILE_LOCATION = "../static/achievements.json"
