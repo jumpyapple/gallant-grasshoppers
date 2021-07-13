@@ -1,5 +1,5 @@
 
-from .styleTypes import border
+from .styleTypes import styles as styleParse
 from .utils.terminal import get_term as terminal
 
 
@@ -7,8 +7,10 @@ class Component:
     """Components are the main way to draw to the screen of the application"""
 
     def __init__(
-            self, window: object = terminal(), width: int = 5, height: int = 5,
-            begin_x: int = 0, begin_y: int = 0, data: any = None, styles: list = None):
+            self, window: object = terminal(),
+            begin_x: int = 0, begin_y: int = 0,
+            width: int = 5, height: int = 5, data: any = None,
+            styles: list = None):
         """
         Parameters
 
@@ -52,7 +54,10 @@ class Component:
         return text
 
     def __repr__(self):
-        return border(self) + Component.get_data(self)
+        line = ""
+        if self.styles:
+            line += "".join([styleParse[func](self) for func in self.styles])
+        return line + Component.get_data(self)
 
     def set_styles(self, styles: list) -> None:
         """Sets styles for a component"""
