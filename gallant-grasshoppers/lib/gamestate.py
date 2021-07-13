@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .load import Loader
 
+# Use this python file location to find the project root.
 PROJECT_ROOT = Path(dirname(dirname(__file__)))
 
 SAVE_TEMPLATE = PROJECT_ROOT / "static" / "save_template.json"
