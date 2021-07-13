@@ -1,19 +1,20 @@
-from blessed import Terminal
+# from render.component import Component
 
-term = Terminal()
+import render as r
+import views as v
+
+term = r.terminal()
 
 
 def main() -> None:
-    """
-    Starts up main function
-
-    :return:
-    """
+    """Starts up main function"""
     while True:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
-            print(term.home + term.clear + term.move_y(term.height // 2))
-            print(term.black_on_darkkhaki(term.center("hello world")))
-            term.inkey()
+            r.utils.check_window_size()
+            v.start_page.print_start_page()
+            key_press = term.inkey(timeout=.5)
+        if key_press == " ":
+            break
 
 
 if __name__ == "__main__":
