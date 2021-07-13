@@ -1,5 +1,6 @@
 
-from .styleTypes import styles as styleParse
+from styleTypes import border as draw
+
 from .utils.terminal import get_term as terminal
 
 
@@ -7,10 +8,8 @@ class Component:
     """Components are the main way to draw to the screen of the application"""
 
     def __init__(
-            self, window: object = terminal(),
-            begin_x: int = 0, begin_y: int = 0,
-            width: int = 5, height: int = 5, data: any = None,
-            styles: list = None):
+            self, window: object = terminal(), width: int = 5, height: int = 5,
+            begin_x: int = 0, begin_y: int = 0, data: any = None):
         """
         Parameters
 
@@ -39,29 +38,20 @@ class Component:
         self.begin_y = begin_y
         self.begin_x = begin_x
         self.data = data
-        self.styles = styles
         if window:
             self.window = window
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
 
-    @classmethod
-    def get_data(cls, comp: object) -> str:
-        """Parses component data list into str to be printed"""
-        text = ""
-        for c, line in enumerate(comp.data):
-            text += (comp.terminal.move_xy(comp.begin_x, comp.begin_y + c)) + str(line)
-        return text
-
     def __repr__(self):
-        line = ""
-        if self.styles:
-            line += "".join([styleParse[func](self) for func in self.styles])
-        return line + Component.get_data(self)
+        text = ""
+        for c, line in enumerate(self.data):
+            text += (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)) + str(line)
+        return draw(self.terminal, self) + text
 
-    def set_styles(self, styles: list) -> None:
+    def set_styles(self, stylesjson: dict) -> None:
         """Sets styles for a component"""
-        self.styles = styles
+        pass
 
     def set_data(self, data: any = None) -> bool:
         """Sets data for to be displayed in component"""

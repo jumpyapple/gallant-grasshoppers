@@ -2,7 +2,7 @@
 from blessed import Terminal
 
 
-def draw(component: object) -> str:
+def border(component: object) -> str:
     """Draws border around component"""
     terminal = Terminal()
     border = ""

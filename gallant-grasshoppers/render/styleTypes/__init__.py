@@ -1,4 +1,4 @@
-from .border import draw as border
+from .border import border
 
 styles = {
     "border": border,
