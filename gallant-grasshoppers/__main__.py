@@ -10,6 +10,7 @@ def main() -> None:
     """Starts up main function"""
     while True:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+            r.utils.check_window_size()
             v.print_start_page()
             key_press = term.inkey(timeout=.5)
         if key_press == " ":
