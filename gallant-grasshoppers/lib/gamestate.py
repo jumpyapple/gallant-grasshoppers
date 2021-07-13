@@ -1,9 +1,9 @@
 import json
-from os import path
+import os
 
 from load import Loader
 
-SAVE_TEMPLATE = "../static/save_template.json"
+SAVE_TEMPLATE = "/static/save_template.json"
 
 DEFAULT_SAVE_NAME = "save.json"
 DEFAULT_SAVE_LOCATION = "../saves"
@@ -21,6 +21,7 @@ TODO
 * Generators need to be changed in order to account for how many of each you have
 * There has to be a way to also save generators into the files
 * ReIndex anything that has an ID so that it's easier to access it
+* Remember to only use ints and no floats
 """
 
 
@@ -36,12 +37,17 @@ class GameState:
         # Here is the current object of the game
         self.state = self.loadGame(save_name, save_location)
 
-        self.modifiers = None  # With time do something to recalculate the modifiers for te game state
+        self.bpt = 0
 
         # Here are all of the ones in the game
         self.available_upgrades = loader.upgrades
         self.available_achievements = loader.achievements
         self.available_generators = loader.generators
+
+    # TODO will this ever be needed other than in testing.
+    def __deleteSave(self) -> None:
+        """Deletes the current save"""
+        os.remove(self.save_location)
 
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
@@ -59,7 +65,7 @@ class GameState:
 
         save_data_as_string = ""
         # Check to see if that save file exists, if not populate it with default data so that the game can start
-        if not path.exists(self.save_location):
+        if not os.path.exists(self.save_location):
             with open(SAVE_TEMPLATE, "r") as File:
                 save_data_as_string = File.read()
 
@@ -105,9 +111,71 @@ class GameState:
         self.changeCash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
 
+    def buyGenerator(self, generator_id: str) -> bool:
+        """Given the generatorId add the generator to your list of generators
+
+        Remember to check if there is enough funds
+        Remember to recalculate the bpt or boxes per tick?
+        """
+        # TODO whole function can be better optimized do that later
+        generator_to_buy = next(
+            (
+                generator
+                for generator in self.available_generators
+                if generator["ID"] == generator_id
+            ),
+            None,
+        )
+
+        if generator_to_buy is None:
+            return False
+
+        cost = generator_to_buy["COST"]
+        if self.getCash() - cost < 0:
+            return False
+
+        has_generator = self.state[GENERATORS].get(generator_id, None)
+        if has_generator is None:
+            # If the player doesn't already own a generator add the data and set amount to 1
+            self.state[GENERATORS][generator_id] = generator_to_buy.update(
+                {"amount": 1}
+            )
+        else:
+            self.state[GENERATORS][generator_id]["amount"] = (
+                self.state[GENERATORS][generator_id]["amount"] + 1
+            )
+
+        self.recalculateBPT()
+
+        return True
+
+    def recalculateBPT(self) -> None:
+        """Use all upgrades and generators to recalculate the new value for bpt"""
+        # First do all calculations that are relating to the generators
+        generators = self.getGenerators()
+
+        new_bpt = 0
+        for generator in generators:
+            bpt = generator["BPT"]
+            amount = generator["amount"]
+            new_bpt = new_bpt + (bpt * amount)
+        self.bpt = new_bpt
+
+        # Now add the multiplyers of the upgrades
+        upgrades = self.getUpgrades()
+        print(upgrades)
+
     def makeBox(self) -> None:
         """Function will make a single box"""
         self.state[CASH] = self.state[CASH] + 1
+
+    def getPurchasableGenerators(self) -> list:
+        """Show all generators that the player can buy at any time"""
+        pass
+
+    def getPurchasableUpgrades(self) -> list:
+        """Show all of the upgrades the player can buy that they don't already own"""
+        pass
 
     def getState(self) -> None:
         """Get the current state of the game as s dict"""
