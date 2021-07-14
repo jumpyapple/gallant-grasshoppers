@@ -2,7 +2,7 @@
 
 from blessed import Terminal
 
-from lib.gamestate import CASH
+from ..lib.gamestate import CASH
 from . import BasePage
 
 

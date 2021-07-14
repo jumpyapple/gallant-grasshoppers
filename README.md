@@ -1,6 +1,17 @@
 # Think Inside the Box
 
 
+## Installation
+
+```console
+$ pip install https://github.com/StackedQueries/gallant-grasshoppers.git
+```
+
+## Usage
+
+```console
+$ gallant-grasshoppers
+```
 
 ### Language:
 ```

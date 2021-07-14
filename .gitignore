@@ -17,6 +17,10 @@ env
 # PyEnv version selector
 .python-version
 
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+/*.egg
+
 # Built objects
 *.so
 dist/
