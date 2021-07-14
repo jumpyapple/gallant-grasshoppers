@@ -74,7 +74,7 @@ class Component:
         return text
 
     def set_styles(self, stylesjson: dict) -> None:
-        """Sets styles for a component"""
+        """Sets styleTypes for a component"""
         self.styles = stylesjson
 
     def set_data(self, data: any = None) -> bool:
