@@ -8,9 +8,10 @@ from .test_page import print_page2, print_test_page  # noqa: F401
 class BasePage:
     """Base class for a page."""
 
-    def __init__(self, state: object, term: Terminal):
+    def __init__(self, state: object, term: Terminal, renderstate: object):
         self.state = state
         self.term = term
+        self.renderstate = renderstate
 
     def render(self) -> None:
         """A render method.
