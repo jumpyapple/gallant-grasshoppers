@@ -13,6 +13,20 @@ $ pip install https://github.com/StackedQueries/gallant-grasshoppers.git
 $ gallant-grasshoppers
 ```
 
+## Testing
+
+For local development, install the package as editable using pip:
+
+```console
+$ pip install -e .
+```
+
+Then run the test cases that is located in the `tests` directory. e.g.
+
+```console
+$ python tests/test_gamestate.py
+```
+
 ### Language:
 ```
 python3
