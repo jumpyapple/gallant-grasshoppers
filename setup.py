@@ -6,7 +6,8 @@ Base on https://python-packaging.readthedocs.io/en/latest/index.html
 from setuptools import setup
 
 
-def readme():
+def readme() -> str:
+    """Read in text in README.md file."""
     with open("README.md", "r") as f:
         return f.read()
 

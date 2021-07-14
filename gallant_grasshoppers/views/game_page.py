@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-
-from blessed import Terminal
-
-from ..lib.gamestate import CASH
 from . import BasePage
 
 
 class GamePage(BasePage):
-    def render(self):
+    """A game page."""
 
+    def render(self) -> None:
+        """Render the game page."""
         with self.term.cbreak(), self.term.hidden_cursor():
-            input_key = ""
             print(
                 self.term.home
                 + self.term.clear
@@ -24,5 +21,6 @@ class GamePage(BasePage):
             )
 
     def handle_input(self, key: str) -> None:
+        """Handle input while in the game page."""
         if key == " ":
             self.state.makeBox()

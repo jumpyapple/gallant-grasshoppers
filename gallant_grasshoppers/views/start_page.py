@@ -1,8 +1,9 @@
 import time
-from typing import Optional
+
+from blessed import Terminal
 
 from . import BasePage
-from blessed import Terminal
+from .lib.gamestate import GameState
 
 boxer_logo = [
     ".----------------.  .----------------.  .----------------.  .----------------.  .----------------.",
@@ -20,11 +21,19 @@ boxer_logo = [
 
 
 class StartPage(BasePage):
-    def __init__(self, state, term, sig: int = None):
+    """
+    The start page of the game.
+
+    :param state: The game state.
+    :param term: The terminal object from blessed.
+    :param sig: TODO Add description.
+    """
+
+    def __init__(self, state: GameState, term: Terminal, sig: int = None):
         super().__init__(state, term)
         self.sig = sig
 
-    def render(self):
+    def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
         if self.sig is not None:
             time.sleep(0.05)
@@ -39,4 +48,5 @@ class StartPage(BasePage):
         time.sleep(0.05)
 
     def handle_input(self, key: str) -> None:
+        """Handler for an input."""
         return None
