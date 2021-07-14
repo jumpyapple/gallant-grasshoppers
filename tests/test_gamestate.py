@@ -1,6 +1,6 @@
 import unittest
 
-from gamestate import GameState
+from gallant_grasshoppers.lib.gamestate import GameState
 
 
 class GameStateTest(unittest.TestCase):

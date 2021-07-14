@@ -1,12 +1,17 @@
 import json
 import os
+from os.path import dirname
+from pathlib import Path
 
-from load import Loader
+from .load import Loader
 
-SAVE_TEMPLATE = "/static/save_template.json"
+# Use this python file location to find the project root.
+PROJECT_ROOT = Path(dirname(dirname(__file__)))
+
+SAVE_TEMPLATE = PROJECT_ROOT / "static" / "save_template.json"
 
 DEFAULT_SAVE_NAME = "save.json"
-DEFAULT_SAVE_LOCATION = "../saves"
+DEFAULT_SAVE_LOCATION = PROJECT_ROOT / "saves"
 
 # Constants for accessing the game data
 CASH = "cash"

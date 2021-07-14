@@ -1,9 +1,13 @@
 import json
 from os import path
+from os.path import dirname
+from pathlib import Path
 
-UPGRADES_FILE_LOCATION = "../static/upgrades.json"
-ACHIEVEMENTS_FILE_LOCATION = "../static/achievements.json"
-UPGRADES_FILE_LOCATION = "../static/upgrades.json"
+# Use this python file location to find the project root.
+PROJECT_ROOT = Path(dirname(dirname(__file__)))
+UPGRADES_FILE_LOCATION = PROJECT_ROOT / "static" / "upgrades.json"
+ACHIEVEMENTS_FILE_LOCATION = PROJECT_ROOT / "static" / "achievements.json"
+UPGRADES_FILE_LOCATION = PROJECT_ROOT / "static" / "upgrades.json"
 
 
 """
