@@ -10,30 +10,42 @@ def print_test_page(**kwargs) -> None:
     """Creates start page, can be called from signal module and directly"""
     main = Component(None)
     c = Component(main, term.width // 2,
-                  term.height // 3, data=[str(kwargs["frame"])])
+                  term.height // 3, children=[str(kwargs["frame"]), str(kwargs["keypress"])], selectable=False)
     c.set_wh(5, 5)
-    c.set_styles({"border": True})
-    c2 = Component(main, term.width // 2, term.height - 1, [str(kwargs["keypress"])])
-    c2.set_wh(10, 5)
-    c2.set_callback(kwargs["current_page"], print_page2)
-    main.set_data([c, c2])
-    main.set_selectables([c2])
-    c2.set_selected(True)
-    selectables = r.get_selectables(main)
+    c2 = Component(main, term.width // 2, term.height - 1, ["Exit"], selectable=True, id="exit")
+    c2.set_wh(1, 1)
+    c3 = Component(main, term.width // 2, term.height - 4, ["Next Page"], selectable=True, id="next")
+    c3.set_wh(1, 1)
+    c2.set_callback(exit, 0)
+    c3.set_callback(kwargs["main"].set_prop, ("current_page", print_page2))
+    main.set_children([c, c3, c2])
+    children = main.get_children()
+    comps = []
+    for i in children:
+        if isinstance(i, Component) and i.is_selectable():
+            comps.append(i)
 
-    current_cursor = False
+    current_cursor = comps[0]
 
-    for i in selectables:
-        if i.get_selected():
-            current_cursor = i
+    for i in comps:
+        try:
+            if kwargs["main"].get_prop("cursor").get_id() == i.get_id():
+                current_cursor = i
+                break
+        except AttributeError:
             break
-    if not current_cursor:
-        current_cursor = selectables[0]
+
+    if kwargs["keypress"] == " ":
+        current_cursor.select()
+    elif kwargs["keypress"] and kwargs["keypress"].is_sequence:
+        if kwargs["keypress"].name == "KEY_DOWN":
+            current_cursor = comps[(comps.index(current_cursor)+1) % len(comps)]
+            kwargs["main"].set_prop(("cursor", current_cursor))
+        elif kwargs["keypress"].name == "KEY_UP":
+            current_cursor = comps[comps.index(current_cursor)-1]
+            kwargs["main"].set_prop(("cursor", current_cursor))
 
     current_cursor.set_styles({"border": True})
-
-    if kwargs["keypress"] == "h":
-        c2.select()
 
     main.draw_component()
 
