@@ -1,4 +1,3 @@
-# from render.component import Component
 
 import render as r
 import views as v
