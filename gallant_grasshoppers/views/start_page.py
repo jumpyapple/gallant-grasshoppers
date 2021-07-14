@@ -3,7 +3,6 @@ import time
 from blessed import Terminal
 
 from . import BasePage
-from .lib.gamestate import GameState
 
 boxer_logo = [
     ".----------------.  .----------------.  .----------------.  .----------------.  .----------------.",
@@ -29,7 +28,7 @@ class StartPage(BasePage):
     :param sig: TODO Add description.
     """
 
-    def __init__(self, state: GameState, term: Terminal, sig: int = None):
+    def __init__(self, state: object, term: Terminal, sig: int = None):
         super().__init__(state, term)
         self.sig = sig
 

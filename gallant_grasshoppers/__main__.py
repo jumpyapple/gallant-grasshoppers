@@ -1,8 +1,8 @@
 # from render.component import Component
 
-from . import render as r
-from .lib.gamestate import GameState
-from .views import GamePage, StartPage
+import render as r
+from lib.gamestate import GameState
+from views import GamePage, StartPage
 
 term = r.terminal()
 

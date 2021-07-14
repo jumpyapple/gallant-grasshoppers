@@ -1,12 +1,10 @@
 from blessed import Terminal
 
-from .lib.gamestate import GameState
-
 
 class BasePage:
     """Base class for a page."""
 
-    def __init__(self, state: GameState, term: Terminal):
+    def __init__(self, state: object, term: Terminal):
         self.state = state
         self.term = term
 
