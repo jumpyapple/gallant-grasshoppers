@@ -1,4 +1,8 @@
+import sys
+
 from blessed import Terminal
+
+from .test_page import print_page2, print_test_page  # noqa: F401
 
 
 class BasePage:
@@ -21,6 +25,9 @@ class BasePage:
         Get called from the main game loop.
         """
         raise NotImplementedError()
+
+
+sys.path.append("..")
 
 
 from .game_page import GamePage  # noqa: F401, E402

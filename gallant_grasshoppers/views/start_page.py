@@ -1,4 +1,3 @@
-import time
 
 from blessed import Terminal
 
@@ -25,17 +24,13 @@ class StartPage(BasePage):
 
     :param state: The game state.
     :param term: The terminal object from blessed.
-    :param sig: TODO Add description.
     """
 
-    def __init__(self, state: object, term: Terminal, sig: int = None):
+    def __init__(self, state: object, term: Terminal):
         super().__init__(state, term)
-        self.sig = sig
 
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
-        if self.sig is not None:
-            time.sleep(0.05)
         print(
             self.term.home + self.term.clear + self.term.move_y(self.term.height // 5)
         )
@@ -44,7 +39,6 @@ class StartPage(BasePage):
             print(self.term.sandybrown(self.term.center(j)))
         print(self.term.move_y(int(self.term.height - 1)))
         print(self.term.white(self.term.center("[PRESS SPACE TO CONTINUE]")))
-        time.sleep(0.05)
 
     def handle_input(self, key: str) -> None:
         """Handler for an input."""
