@@ -23,3 +23,5 @@ class GamePage(BasePage):
         """Handle input while in the game page."""
         if key == " ":
             self.state.makeBox()
+        elif key == "q":
+            exit(0)

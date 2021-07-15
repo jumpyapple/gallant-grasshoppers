@@ -56,9 +56,9 @@ class Component:
         """Returns Bool whether component is selectable"""
         return self.selectable
 
-    def set_callback(self, func: any, var: any) -> None:
+    def set_callback(self, *args) -> None:
         """Sets callback function to be executed when selected"""
-        self.callback = (func, var)
+        self.callback = (args[0], args[1])
 
     def select(self) -> None:
         """Exectues callback function"""

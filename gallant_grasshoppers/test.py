@@ -8,7 +8,7 @@ term = r.terminal()
 def main() -> None:
     """Starts up main function"""
     c = r.utils.StateManager({
-        "current_page": v.start_page
+        "current_page": v.test_page.print_test_page
     })
     frame = 0
     key_press = None
