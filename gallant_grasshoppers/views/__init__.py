@@ -2,8 +2,6 @@ import sys
 
 from blessed import Terminal
 
-from .test_page import print_page2, print_test_page  # noqa: F401
-
 
 class BasePage:
     """Base class for a page."""

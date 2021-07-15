@@ -17,7 +17,6 @@ def main() -> None:
         "current_page": StartPage,
         "head_component": Component(None)
     })
-
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         while not is_exiting:
             # Start up check.
@@ -27,7 +26,7 @@ def main() -> None:
             current_page.render()
 
             key_press = term.inkey(timeout=.5)
-            time.sleep(.02)  # this helps with screen blinking and gives a smoother experience
+            time.sleep(1.0/25)  # this helps with screen blinking and gives a smoother experience
 
             current_page.handle_input(key_press)
 
