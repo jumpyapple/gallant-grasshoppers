@@ -1,12 +1,17 @@
+import sys
+
 from blessed import Terminal
+
+from .test_page import print_page2, print_test_page  # noqa: F401
 
 
 class BasePage:
     """Base class for a page."""
 
-    def __init__(self, state: object, term: Terminal):
+    def __init__(self, state: object, term: Terminal, renderstate: object):
         self.state = state
         self.term = term
+        self.renderstate = renderstate
 
     def render(self) -> None:
         """A render method.
@@ -21,6 +26,9 @@ class BasePage:
         Get called from the main game loop.
         """
         raise NotImplementedError()
+
+
+sys.path.append("..")
 
 
 from .game_page import GamePage  # noqa: F401, E402
