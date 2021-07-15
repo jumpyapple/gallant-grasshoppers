@@ -1,3 +1,5 @@
+import time
+
 import render as r
 from lib.gamestate import GameState
 from render.component import Component
@@ -21,11 +23,13 @@ def main() -> None:
             # Start up check.
             r.utils.check_window_size()
 
-            term.clear()
+            # term.clear(), I don't think this is needed
             current_page = c.get_prop("current_page")(state, term, c)
             current_page.render()
 
-            key_press = term.inkey()
+            key_press = term.inkey(timeout=.5)
+            time.sleep(.01)
+
             current_page.handle_input(key_press)
 
 

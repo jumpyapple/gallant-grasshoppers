@@ -9,13 +9,18 @@ class GamePage(BasePage):
         """Render the game page."""
         print(
             self.term.home
-            + self.term.clear
+            # + self.term.clear, I don't think this is needed
             + self.term.move_y(self.term.height // 2)
         )
         current_cash = self.state.getCash()
         print(
             self.term.black_on_darkkhaki(
-                self.term.center(f"Create a box [{current_cash}]")
+                self.term.center("Create a box")
+            )
+        )
+        print(
+            self.term.black_on_darkkhaki(
+                self.term.center(f"[{current_cash}]")
             )
         )
 

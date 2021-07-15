@@ -89,7 +89,7 @@ class Component:
 
     def draw_component(self) -> bool:
         """Draws component"""
-        print(self)
+        print(self, flush=True)
         return True
 
     def set_wh(self, width: int = 0, height: int = 5,) -> None:
