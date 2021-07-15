@@ -196,7 +196,6 @@ class GameState:
             unlock_on = generator.get("UNLOCK_ON", None)
             if unlock_on is not None and unlock_on in owned_generators:
                 purchasableGenerators.append(generator_id)
-        print(purchasableGenerators)
         # TODO in the future it maybe shouldn't just return the IDs of the generators
         return purchasableGenerators
 
