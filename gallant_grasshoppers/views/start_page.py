@@ -64,7 +64,6 @@ class StartPage(BasePage):
                 break
 
         self.current_cursor.set_styles({"border": True})
-
         main.draw_component()
 
     def handle_input(self, key: any) -> None:
