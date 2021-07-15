@@ -1,4 +1,3 @@
-
 from .styles.border import draw
 from .utils.terminal import get_term as terminal
 
@@ -7,8 +6,14 @@ class Component:
     """Components are the main way to draw to the screen of the application"""
 
     def __init__(
-            self, window: object = terminal(), width: int = 5, height: int = 5,
-            begin_x: int = 0, begin_y: int = 0, data: any = None):
+        self,
+        window: object = terminal(),
+        width: int = 5,
+        height: int = 5,
+        begin_x: int = 0,
+        begin_y: int = 0,
+        data: any = None,
+    ):
         """
         Parameters
 
@@ -44,7 +49,9 @@ class Component:
     def __repr__(self):
         text = ""
         for c, line in enumerate(self.data):
-            text += (self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)) + str(line)
+            text += (
+                self.terminal.move_xy(self.begin_x + 1, self.begin_y + 1 + c)
+            ) + str(line)
         return draw(self.terminal, self) + text
 
     def set_data(self, data: any = None) -> bool:
@@ -58,6 +65,6 @@ class Component:
         return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     win = Component(None, 1, 2, 3, 4)
     print(win)

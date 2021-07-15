@@ -20,4 +20,19 @@
 		"amount": 2,
 		"action": "MULTIPLY"
 	}]
-}]
+},
+{
+	"ID": "NEW_MINIMUM",
+	"DISPLAY_NAME": "New Minimum Wage",
+	"DISPLAY_DESCRIPTION": "Who knew paying your employees more would make them more productive?",
+	"REQUIREMENTS": [{
+			"type": "CURRENCY",
+			"amount": "1000000"
+		},
+		{
+			"type": "GENERATOR",
+			"id": "AMAZON_WORKER"
+		}
+	]
+}
+]

@@ -166,7 +166,7 @@ class GameState:
             new_bpt = new_bpt + (bpt * amount)
         self.bpt = new_bpt
 
-        # Now add the multiplyers of the upgrades
+        # TODO Now add the multiplyers of the upgrades
         upgrades = self.getUpgrades()
         print(upgrades)
 
@@ -175,15 +175,37 @@ class GameState:
         self.state[CASH] = self.state[CASH] + 1
 
     def getPurchasableGenerators(self) -> list:
-        """Show all generators that the player can buy at any time"""
-        pass
+        """Show all generators that the player can buy at any time
+
+        Player must own at least 1 of the UNLOCK_ON requirement to unlock the other
+        TODO find a way to not have torecalculate all of this eventually - for now just do
+        TODO Right now the static/generators needs to be in order for this function to work as intended fix it
+        """
+        owned_generators = [generator["ID"] for generator in self.getGenerators()]
+
+        purchasableGenerators = []
+        for generator in self.available_generators:
+            generator_id = generator["ID"]
+            if (
+                generator_id in owned_generators
+                or generator.get("UNLOCK_ON", None) is None
+            ):
+                purchasableGenerators.append(generator_id)
+                continue
+
+            unlock_on = generator.get("UNLOCK_ON", None)
+            if unlock_on is not None and unlock_on in owned_generators:
+                purchasableGenerators.append(generator_id)
+        print(purchasableGenerators)
+        # TODO in the future it maybe shouldn't just return the IDs of the generators
+        return purchasableGenerators
 
     def getPurchasableUpgrades(self) -> list:
         """Show all of the upgrades the player can buy that they don't already own"""
         pass
 
     def getState(self) -> None:
-        """Get the current state of the game as s dict"""
+        """Get the current state of the game as a dict"""
         return self.state
 
     def getCash(self) -> int:

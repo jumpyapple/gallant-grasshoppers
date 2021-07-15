@@ -51,6 +51,11 @@ class GameStateTest(unittest.TestCase):
         self.Game.changeCash(-500)
         self.assertEqual(self.Game.getCash(), 500)
 
+    def test_purchasableGenerators(self) -> None:
+        """Should only show the basic generators unlocked from the start"""
+        self.assertEqual(len(self.Game.getGenerators()), 0)
+        self.assertEqual(len(self.Game.getPurchasableGenerators()), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
