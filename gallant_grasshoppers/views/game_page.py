@@ -9,7 +9,6 @@ class GamePage(BasePage):
         """Render the game page."""
         print(
             self.term.home
-            # + self.term.clear, I don't think this is needed
             + self.term.move_y(self.term.height // 2)
         )
         current_cash = self.state.getCash()

@@ -37,7 +37,6 @@ class StartPage(BasePage):
 
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
-        # term.clear(), I don't think this is needed
         term.home()
         main = self.renderstate.get_prop("head_component")
         c = Component(main, term.width // 2 - len(boxer_logo[1]) // 2,

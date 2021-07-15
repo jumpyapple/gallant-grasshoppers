@@ -23,12 +23,11 @@ def main() -> None:
             # Start up check.
             r.utils.check_window_size()
 
-            # term.clear(), I don't think this is needed
             current_page = c.get_prop("current_page")(state, term, c)
             current_page.render()
 
             key_press = term.inkey(timeout=.5)
-            time.sleep(.01)
+            time.sleep(.02)  # this helps with screen blinking and gives a smoother experience
 
             current_page.handle_input(key_press)
 
