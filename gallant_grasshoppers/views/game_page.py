@@ -27,15 +27,16 @@ class GamePage(BasePage):
 
         def component_constructor(data: any, location: tuple) -> Component:
             """Constructs components"""
-            c = Component(left_half, location[0], location[1], children=[data])
-            c.set_wh(10, 3)
+            c = Component(left_half, location[0] // 2, location[1], children=[data])
+            c.begin_x -= r.utils.longest(c) // 2
+            c.set_wh(r.utils.longest(c), 10)
             c.set_styles({"border": True})
             return c
 
         # placeholder info for map
 
-        to_be_comps = ['red', 'green', 'black', 'black', 'red', 'black']
-        loc_list = [(left_half.width // 2 - len(i) // 2, c*5+3) for c, i in enumerate(to_be_comps)]
+        to_be_comps = self.state.available_generators
+        loc_list = [(left_half.width // 2 - len(i) // 2, c*10+3) for c, i in enumerate(to_be_comps)]
 
         list_of_comps = map(component_constructor, to_be_comps, loc_list)
         left_half.set_children(list_of_comps)

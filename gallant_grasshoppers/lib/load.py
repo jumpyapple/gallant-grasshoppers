@@ -7,7 +7,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(dirname(dirname(__file__)))
 UPGRADES_FILE_LOCATION = PROJECT_ROOT / "static" / "upgrades.json"
 ACHIEVEMENTS_FILE_LOCATION = PROJECT_ROOT / "static" / "achievements.json"
-UPGRADES_FILE_LOCATION = PROJECT_ROOT / "static" / "upgrades.json"
+GENERATORS_FILE_LOCATION = PROJECT_ROOT / "static" / "generators.json"
 
 
 """
@@ -23,7 +23,7 @@ class Loader:
         self,
         upgradesPath: str = UPGRADES_FILE_LOCATION,
         achievementsPath: str = ACHIEVEMENTS_FILE_LOCATION,
-        generatorsPath: str = UPGRADES_FILE_LOCATION,
+        generatorsPath: str = GENERATORS_FILE_LOCATION,
     ) -> None:
         self.upgrades = self.loadJSON(upgradesPath)
         self.achievements = self.loadJSON(achievementsPath)
