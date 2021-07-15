@@ -24,7 +24,6 @@ def main() -> None:
             term.clear()
             current_page = c.get_prop("current_page")(state, term, c)
             current_page.render()
-
             key_press = term.inkey()
             current_page.handle_input(key_press)
 

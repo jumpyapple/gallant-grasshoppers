@@ -5,7 +5,6 @@ from blessed import Terminal
 from . import BasePage
 from .game_page import GamePage
 
-term = Terminal()
 Component = r.Component
 boxer_logo = [
     " .----------------.  .----------------.  .----------------.  .----------------.  .----------------.",
@@ -37,14 +36,14 @@ class StartPage(BasePage):
 
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
-        term.clear()
+        self.term.clear()
         main = self.renderstate.get_prop("head_component")
-        c = Component(main, term.width // 2 - len(boxer_logo[1]) // 2,
-                      term.height // 3, children=boxer_logo, selectable=False)
+        c = Component(main, self.term.width // 2 - len(boxer_logo[1]) // 2,
+                      self.term.height // 3, children=boxer_logo, selectable=False)
         c.set_wh(5, 5)
-        c2 = Component(main, term.width // 2, term.height - 1, ["Exit"], selectable=True, id="exit")
+        c2 = Component(main, self.term.width // 2, self.term.height - 1, ["Exit"], selectable=True, id="exit")
         c2.set_wh(1, 1)
-        c3 = Component(main, term.width // 2, term.height - 4, ["Next Page"], selectable=True, id="next")
+        c3 = Component(main, self.term.width // 2, self.term.height - 4, ["Next Page"], selectable=True, id="next")
         c3.set_wh(1, 1)
         c2.set_callback(exit, 0)
         c3.set_callback(self.renderstate.set_prop, ("current_page", GamePage))
