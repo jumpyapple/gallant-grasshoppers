@@ -36,7 +36,6 @@ class StartPage(BasePage):
 
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
-        self.term.clear()
         main = self.renderstate.get_prop("head_component")
         c = Component(main, self.term.width // 2 - len(boxer_logo[1]) // 2,
                       self.term.height // 3, children=boxer_logo, selectable=False)
@@ -65,7 +64,6 @@ class StartPage(BasePage):
                 break
 
         self.current_cursor.set_styles({"border": True})
-
         main.draw_component()
 
     def handle_input(self, key: any) -> None:

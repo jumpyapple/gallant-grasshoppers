@@ -17,10 +17,7 @@ class GamePage(BasePage):
 
     def render(self) -> None:
         """Render the game page."""
-        self.term.clear()
-
         main = self.renderstate.get_prop("head_component")
-
         left_half = Component(main, 0, 0)
         left_half.set_wh(main.width // 2, main.height-1)
         left_half.set_styles({"border": True})
@@ -52,10 +49,9 @@ class GamePage(BasePage):
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
         update_box.set_wh(right_half.width-2, right_half.height // 2)
         update_box.set_styles({"border": True})
-
         right_half.set_children([c, update_box])
-
         main.set_children([left_half, right_half])
+
         main.draw_component()
 
     def handle_input(self, key: str) -> None:

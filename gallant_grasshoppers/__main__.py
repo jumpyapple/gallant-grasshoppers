@@ -18,8 +18,8 @@ def main() -> None:
         "head_component": Component(None)
     })
 
-    while not is_exiting:
-        with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+    with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+        while not is_exiting:
             # Start up check.
             r.utils.check_window_size()
 
