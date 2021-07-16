@@ -19,17 +19,24 @@ class GamePage(BasePage):
         """Render the game page."""
         main = self.renderstate.get_prop("head_component")
         left_half = Component(main, 0, 0)
-        left_half.set_wh(main.width // 2, main.height-1)
+        left_half.set_wh(main.width // 2, main.height)
         left_half.set_styles({"border": True})
 
         def component_constructor(data: any, location: tuple) -> Component:
             """Constructs components"""
             id = f"{data['ID']}"
             desc = f"{data['DESCRIPTION']}"
-            bpt = f"BPT: {data['BPT']} PRICE:{data['COST']}"
+            bpt = f"BPS: {data['BPT']} PRICE:{data['COST']} CURRENT: 0"
 
-            c = Component(left_half, location[0] // 2, location[1], children=[id, desc, bpt])
-            c.set_wh(50, 10)
+            c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
+                          children=[id, desc, bpt])
+            c.set_wh(int(left_half.width // 1.5), 8)
+            for count, i in enumerate(c.children):
+                if len(i) > c.width:
+                    c.children[count] = i[:c.width-2]
+                    c.children.insert(count+1, i[c.width-2:])
+                    c.height += 1
+
             c.set_styles({"border": True})
             return c
 
@@ -42,7 +49,7 @@ class GamePage(BasePage):
         left_half.set_children(list_of_comps)
 
         right_half = Component(main, main.width // 2, 0)
-        right_half.set_wh(main.width // 2, main.height-1)
+        right_half.set_wh(main.width // 2, main.height)
         right_half.set_styles({"border": True})
 
         current_cash = self.state.getCash()
