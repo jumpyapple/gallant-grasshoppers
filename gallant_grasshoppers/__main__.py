@@ -12,11 +12,12 @@ term = r.terminal()
 is_achievement_received = False
 
 def achievement_checking(term, state, render_state):
-    # TODO: jumpyapple - Moving this to GameState?
+    # TODO: jumpyapple - Use the achievement data instead of the hard coded one.
+
     global is_achievement_received
     if state.getCash() > 0 and state.getCash() <= 1 and not is_achievement_received:
         is_achievement_received = True
-        popup = PopupMessage(term, render_state, "Your first box!", y=4)
+        popup = PopupMessage(term, render_state, "Your first box! [ESC to dismiss]", y=4)
         render_state.set_prop(("current_popup", popup))
 
 def main() -> None:
@@ -60,7 +61,7 @@ def main() -> None:
 
                 # TODO: jumpyapple - Add a trap for ESC key.
                 # This may have to be in each page since ESC may be used to dismiss
-                # sub menu.
+                # sub-menu/dialog/etc.
 
                 # If there is a popup, it will receive the input first.
                 if popup:

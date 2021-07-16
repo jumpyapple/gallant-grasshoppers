@@ -46,7 +46,7 @@ class StartPage(BasePage):
         c2.set_wh(1, 1)
         c3 = Component(main, self.term.width // 2, self.term.height - 7, ["New session"], selectable=True, id="next")
         c3.set_wh(1, 1)
-        c2.set_callback(exit, 0)
+        c2.set_callback(self.exit_handler)
         c3.set_callback(self.new_game_handler)
 
         credit_btn = Component(main, self.term.width // 2, self.term.height - 4, ["Credit"], selectable=True, id="credit")
@@ -120,3 +120,7 @@ class StartPage(BasePage):
     def credit_handler(self):
         from .credit_page import CreditPage
         self.renderstate.set_prop(("current_page", CreditPage))
+
+    def exit_handler(self):
+        popup = r.PopupPrompt(self.term, self.renderstate, "Are you sure?", [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)])
+        self.renderstate.set_prop(("current_popup", popup))

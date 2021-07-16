@@ -66,3 +66,4 @@ class GamePage(BasePage):
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))
+            # TODO: jumpyapple - set is_in_game to False OR when the ESC menu is used, do this in that.

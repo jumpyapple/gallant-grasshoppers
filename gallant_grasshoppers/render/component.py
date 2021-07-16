@@ -12,8 +12,15 @@ from .utils.terminal import get_term as terminal
 class Component:
     """Components are the main way to draw to the screen of the application"""
 
-    def __init__(self, window: object, begin_x: int = 0, begin_y: int = 0, children: list[any] = None,
-                 selectable: bool = False, id: str = None):
+    def __init__(
+        self,
+        window: object,
+        begin_x: int = 0,
+        begin_y: int = 0,
+        children: list[any] = None,
+        selectable: bool = False,
+        id: str = None,
+    ):
         """
         Parameters
 
@@ -106,7 +113,11 @@ class Component:
 
         return True
 
-    def set_wh(self, width: int = 0, height: int = 5,) -> None:
+    def set_wh(
+        self,
+        width: int = 0,
+        height: int = 5,
+    ) -> None:
         """Set width and height"""
         self.width = width
         self.height = height
@@ -160,3 +171,52 @@ class PopupMessage:
         elif key:
             if key == self.dismiss_key_name:
                 self.render_state.set_prop(("current_popup", None))
+
+class PopupPrompt(PopupMessage):
+    def __init__(
+            self,
+            term,
+            render_state,
+            message: str,
+            choices: list[tuple],
+            **kwargs
+    ) -> None:
+        super().__init__(term, render_state, message, **kwargs)
+        self.choices = choices
+
+        self.callbacks = []
+
+        choices = []
+        for choice, func in self.choices:
+            first_char = choice[0]
+            choices.append(f"[{first_char}]{choice[1:]}")
+
+            self.callbacks.append((first_char.lower(), func))
+        self.choice_text = " ".join(choices)
+
+    def render(self) -> None:
+        term = self.term
+
+        full_width = self.style(" " * term.width)
+        with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):
+            print(term.move_up + full_width)
+            print(self.style(term.center(self.message)))
+            print(self.style(term.center(self.choice_text)))
+            print(full_width)
+
+    def handle_input(self, key: Union[str, Keystroke]) -> None:
+        if getattr(key, "is_sequence", None) is not None:
+            if key.name == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))
+                return
+            for first_char, func in self.callbacks:
+                if key == first_char:
+                    self.render_state.set_prop(("current_popup", None))
+                    func("")
+                    return
+        elif key:
+            for first_char, func in self.callbacks:
+                if key == first_char:
+                    self.render_state.set_prop(("current_popup", None))
+                    func("")
+                    break

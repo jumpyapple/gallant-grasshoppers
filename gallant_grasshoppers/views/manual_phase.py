@@ -46,3 +46,4 @@ class ManualPhasePage(BasePage):
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))
+            # TODO: jumpyapple - set is_in_game to False
