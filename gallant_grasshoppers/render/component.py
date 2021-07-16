@@ -1,9 +1,11 @@
 import io
 import sys
-from typing import Union
+from typing import Any, Callable, Union
 
+from blessed import Terminal
 from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
+from render.utils import StateManager
 
 from .styleTypes import styles
 from .utils.terminal import get_term as terminal
@@ -70,7 +72,7 @@ class Component:
         """Returns Bool whether component is selectable"""
         return self.selectable
 
-    def set_callback(self, func, *args, **kwargs) -> None:
+    def set_callback(self, func: Callable[..., None], *args, **kwargs) -> None:
         """Sets callback function to be executed when selected"""
         self.callback = (func, args, kwargs)
 
@@ -134,12 +136,13 @@ class PopupMessage:
     :param style: The style of the popup.
     :param dismiss_key_name: The name of the key to dismiss the popup.
     """
+
     def __init__(
         self,
-        term,
-        render_state,
+        term: Terminal,
+        render_state: StateManager,
         message: str,
-        y=None,
+        y: Union[int, Any] = None,
         style: Union[FormattingString, NullCallableString] = None,
         dismiss_key_name: str = "KEY_ESCAPE",
     ) -> None:
@@ -157,6 +160,7 @@ class PopupMessage:
             self.style = self.term.formatter("black_on_cyan3")
 
     def render(self) -> None:
+        """Render the popup message."""
         term = self.term
         full_width = self.style(" " * term.width)
         with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):
@@ -165,6 +169,7 @@ class PopupMessage:
             print(full_width)
 
     def handle_input(self, key: Union[str, Keystroke]) -> None:
+        """Handling the input"""
         if getattr(key, "is_sequence", None) is not None:
             if key.name == self.dismiss_key_name:
                 self.render_state.set_prop(("current_popup", None))
@@ -172,14 +177,25 @@ class PopupMessage:
             if key == self.dismiss_key_name:
                 self.render_state.set_prop(("current_popup", None))
 
+
 class PopupPrompt(PopupMessage):
+    """
+    Represent a popup object.
+
+    :param term: The `blessed.Terminal` object.
+    :param render_state: The `StateManager` object.
+    :param message: The message to be displayed.
+    :param choices: The list of 2-tuple contains word and callback function.
+    :param kwargs: See kwargs of `PopupMessage` for detail.
+    """
+
     def __init__(
-            self,
-            term,
-            render_state,
-            message: str,
-            choices: list[tuple],
-            **kwargs
+        self,
+        term: Terminal,
+        render_state: StateManager,
+        message: str,
+        choices: list[tuple],
+        **kwargs,
     ) -> None:
         super().__init__(term, render_state, message, **kwargs)
         self.choices = choices
@@ -195,6 +211,7 @@ class PopupPrompt(PopupMessage):
         self.choice_text = " ".join(choices)
 
     def render(self) -> None:
+        """Render the popup prompt."""
         term = self.term
 
         full_width = self.style(" " * term.width)
@@ -205,6 +222,7 @@ class PopupPrompt(PopupMessage):
             print(full_width)
 
     def handle_input(self, key: Union[str, Keystroke]) -> None:
+        """Handling the input"""
         if getattr(key, "is_sequence", None) is not None:
             if key.name == self.dismiss_key_name:
                 self.render_state.set_prop(("current_popup", None))

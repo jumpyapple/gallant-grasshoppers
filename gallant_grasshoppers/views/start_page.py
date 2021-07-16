@@ -1,5 +1,3 @@
-import json
-
 import render as r  # ignore this. it is correct syntax
 from blessed import Terminal
 
@@ -39,24 +37,57 @@ class StartPage(BasePage):
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
         main = self.renderstate.get_prop("head_component")
-        c = Component(main, self.term.width // 2 - len(boxer_logo[1]) // 2,
-                      self.term.height // 3, children=boxer_logo, selectable=False)
+        c = Component(
+            main,
+            self.term.width // 2 - len(boxer_logo[1]) // 2,
+            self.term.height // 3,
+            children=boxer_logo,
+            selectable=False,
+        )
         c.set_wh(5, 5)
-        c2 = Component(main, self.term.width // 2, self.term.height - 1, ["Exit"], selectable=True, id="exit")
+        c2 = Component(
+            main,
+            self.term.width // 2,
+            self.term.height - 1,
+            ["Exit"],
+            selectable=True,
+            id="exit",
+        )
         c2.set_wh(1, 1)
-        c3 = Component(main, self.term.width // 2, self.term.height - 7, ["New session"], selectable=True, id="next")
+        c3 = Component(
+            main,
+            self.term.width // 2,
+            self.term.height - 7,
+            ["New session"],
+            selectable=True,
+            id="next",
+        )
         c3.set_wh(1, 1)
         c2.set_callback(self.exit_handler)
         c3.set_callback(self.new_game_handler)
 
-        credit_btn = Component(main, self.term.width // 2, self.term.height - 4, ["Credit"], selectable=True, id="credit")
+        credit_btn = Component(
+            main,
+            self.term.width // 2,
+            self.term.height - 4,
+            ["Credit"],
+            selectable=True,
+            id="credit",
+        )
         credit_btn.set_wh(1, 1)
         credit_btn.set_callback(self.credit_handler)
 
         # Add a "continue" button if there is a save file.
         is_save_exist = self.renderstate.get_prop("is_save_exist")
         if is_save_exist:
-            continue_btn = Component(main, self.term.width // 2, self.term.height - 10, ["Continue"], selectable=True, id="continue")
+            continue_btn = Component(
+                main,
+                self.term.width // 2,
+                self.term.height - 10,
+                ["Continue"],
+                selectable=True,
+                id="continue",
+            )
             continue_btn.set_wh(1, 1)
             continue_btn.set_callback(self.continue_handler)
             main.set_children([c, continue_btn, c3, credit_btn, c2])
@@ -90,13 +121,18 @@ class StartPage(BasePage):
             exit(0)
         elif key and key.is_sequence:
             if key.name == "KEY_DOWN":
-                self.current_cursor = self.comps[(self.comps.index(self.current_cursor) + 1) % len(self.comps)]
+                self.current_cursor = self.comps[
+                    (self.comps.index(self.current_cursor) + 1) % len(self.comps)
+                ]
                 self.renderstate.set_prop(("cursor", self.current_cursor))
             elif key.name == "KEY_UP":
-                self.current_cursor = self.comps[self.comps.index(self.current_cursor) - 1]
+                self.current_cursor = self.comps[
+                    self.comps.index(self.current_cursor) - 1
+                ]
                 self.renderstate.set_prop(("cursor", self.current_cursor))
 
-    def new_game_handler(self):
+    def new_game_handler(self) -> None:
+        """Handler for new game button."""
         # jumypapple: Now, we are loading the data.
         # TODO: jumpyapple - ask for confirmation if a save is already exist.
         self.state.state = self.state.newGame()
@@ -104,7 +140,8 @@ class StartPage(BasePage):
         self.renderstate.set_prop(("current_page", ManualPhasePage))
         self.renderstate.set_prop(("is_in_game", True))
 
-    def continue_handler(self):
+    def continue_handler(self) -> None:
+        """Handler for continue button."""
         self.state.state = self.state.loadGame(None, None)
 
         # Determine which phase to load into.
@@ -117,10 +154,18 @@ class StartPage(BasePage):
         elif self.state.phase == "game":
             self.renderstate.set_prop(("current_page", GamePage))
 
-    def credit_handler(self):
+    def credit_handler(self) -> None:
+        """Handler for credit button."""
         from .credit_page import CreditPage
+
         self.renderstate.set_prop(("current_page", CreditPage))
 
-    def exit_handler(self):
-        popup = r.PopupPrompt(self.term, self.renderstate, "Are you sure?", [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)])
+    def exit_handler(self) -> None:
+        """Handler for exit button."""
+        popup = r.PopupPrompt(
+            self.term,
+            self.renderstate,
+            "Are you sure?",
+            [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)],
+        )
         self.renderstate.set_prop(("current_popup", popup))

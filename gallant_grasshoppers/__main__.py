@@ -2,34 +2,45 @@ import time
 from pathlib import Path
 
 import render as r
-from lib.gamestate import GameState, DEFAULT_SAVE_LOCATION, DEFAULT_SAVE_NAME
+from blessed import Terminal
+from lib.gamestate import DEFAULT_SAVE_LOCATION, DEFAULT_SAVE_NAME, GameState
 from render.component import Component, PopupMessage
 from views import StartPage
 
 DEBUG = True
 term = r.terminal()
-
 is_achievement_received = False
 
-def achievement_checking(term, state, render_state):
-    # TODO: jumpyapple - Use the achievement data instead of the hard coded one.
 
+def achievement_checking(
+    term: Terminal, state: GameState, render_state: r.utils.StateManager
+) -> None:
+    """
+    Check achievement and display a popup.
+
+    TODO: jumpyapple - Use the achievement data instead of the hard coded one.
+    """
     global is_achievement_received
     if state.getCash() > 0 and state.getCash() <= 1 and not is_achievement_received:
         is_achievement_received = True
-        popup = PopupMessage(term, render_state, "Your first box! [ESC to dismiss]", y=4)
+        popup = PopupMessage(
+            term, render_state, "Your first box! [ESC to dismiss]", y=4
+        )
         render_state.set_prop(("current_popup", popup))
+
 
 def main() -> None:
     """Starts up main function"""
     state = GameState()
-    c = r.utils.StateManager({
-        "is_exiting": False,
-        "is_in_game": False,
-        "current_page": StartPage,
-        "current_popup": None,
-        "head_component": Component(None)
-    })
+    c = r.utils.StateManager(
+        {
+            "is_exiting": False,
+            "is_in_game": False,
+            "current_page": StartPage,
+            "current_popup": None,
+            "head_component": Component(None),
+        }
+    )
 
     # Check if there is a save file.
     save_file_path = Path(DEFAULT_SAVE_LOCATION) / DEFAULT_SAVE_NAME
@@ -56,8 +67,10 @@ def main() -> None:
                 if popup:
                     popup.render()
 
-                key_press = term.inkey(timeout=.5)
-                time.sleep(1.0/25)  # this helps with screen blinking and gives a smoother experience
+                key_press = term.inkey(timeout=0.5)
+                time.sleep(
+                    1.0 / 25
+                )  # this helps with screen blinking and gives a smoother experience
 
                 # TODO: jumpyapple - Add a trap for ESC key.
                 # This may have to be in each page since ESC may be used to dismiss

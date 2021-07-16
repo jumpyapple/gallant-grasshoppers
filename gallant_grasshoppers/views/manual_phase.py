@@ -1,23 +1,20 @@
 from . import BasePage
 from .game_page import GamePage
 
+
 class ManualPhasePage(BasePage):
     """A game page."""
 
     def render(self) -> None:
         """Render the game page."""
         print(
-            self.term.home
-            + self.term.clear
-            + self.term.move_y(self.term.height // 2)
+            self.term.home + self.term.clear + self.term.move_y(self.term.height // 2)
         )
         current_cash = self.state.getCash()
         if current_cash <= 1:
             if current_cash == 0:
                 print(
-                    self.term.black_on_darkkhaki(
-                        self.term.center(f"There is no box D:")
-                    )
+                    self.term.black_on_darkkhaki(self.term.center("There is no box D:"))
                 )
             else:
                 print(
@@ -31,7 +28,10 @@ class ManualPhasePage(BasePage):
                     self.term.center(f"There are {current_cash} boxes")
                 )
             )
-        print(self.term.move_y((self.term.height // 2) + 5) + self.term.center("Tap [Spacebar] to fold a box"))
+        print(
+            self.term.move_y((self.term.height // 2) + 5)
+            + self.term.center("Tap [Spacebar] to fold a box")
+        )
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""

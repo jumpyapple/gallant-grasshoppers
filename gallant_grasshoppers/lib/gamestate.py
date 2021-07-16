@@ -53,10 +53,12 @@ class GameState:
 
     @property
     def phase(self) -> str:
+        """Getter of _phase."""
         return self._phase
 
     @phase.setter
     def phase(self, phase: str) -> None:
+        """Setter of _phase."""
         self._phase = phase
 
     # TODO will this ever be needed other than in testing.
