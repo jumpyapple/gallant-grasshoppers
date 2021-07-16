@@ -101,6 +101,7 @@ class StartPage(BasePage):
         self.state.state = self.state.newGame()
         self.renderstate.set_prop(("current_phase", "manual"))
         self.renderstate.set_prop(("current_page", ManualPhasePage))
+        self.renderstate.set_prop(("is_in_game", True))
 
     def continue_handler(self):
         self.state.state = self.state.loadGame(None, None)
@@ -108,6 +109,7 @@ class StartPage(BasePage):
         # Determine which phase to load into.
         self.state.phase = self.state.state["phase"]
         self.renderstate.set_prop(("current_phase", self.state.phase))
+        self.renderstate.set_prop(("is_in_game", True))
 
         if self.state.phase == "manual":
             self.renderstate.set_prop(("current_page", ManualPhasePage))
