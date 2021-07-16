@@ -55,8 +55,8 @@ class Component:
         self.styles = None
         self.id = id
         self.callback = None
+        self.window = window
         if window:
-            self.window = window
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
 
@@ -85,17 +85,27 @@ class Component:
         func(*args, **kwargs)
 
     def __repr__(self):
-        text = ""
+        text = self.terminal.normal
         if self.styles:
             keys = self.styles.keys()
             for key in keys:
-                text += styles[key](self, self.styles[key])
+                output = styles[key](self, self.styles[key])
+                if output:
+                    text += output
         for c, line in enumerate(self.children):
             if self.begin_x is None and self.begin_y is None:
                 text += self.terminal.move_xy(self.window.begin_x, self.window.begin_y+c) + str(line)
                 continue
             text += self.terminal.move_xy(self.begin_x, self.begin_y + c) + str(line)
-        return text
+
+        next_text = self.terminal.normal
+        if self.window is not None and self.window.styles:
+            try:
+                if self.window.styles["color"]:
+                    next_text = self.window.styles["color"]
+            except KeyError:
+                pass
+        return text + next_text
 
     def set_styles(self, stylesjson: dict) -> None:
         """Sets styleTypes for a component"""

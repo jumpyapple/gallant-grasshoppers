@@ -30,14 +30,14 @@ class GamePage(BasePage):
 
             c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
                           children=[id, desc, bpt])
-            c.set_wh(int(left_half.width // 1.5), 8)
+            c.set_wh(int(left_half.width // 1.5), len(c.children)+2)
             for count, i in enumerate(c.children):
                 if len(i) > c.width:
-                    c.children[count] = i[:c.width-2]
-                    c.children.insert(count+1, i[c.width-2:])
+                    c.children[count] = i[:c.width-3]
+                    c.children.insert(count+1, i[c.width-3:])
                     c.height += 1
 
-            c.set_styles({"border": True})
+            c.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True, "center": True})
             return c
 
         # placeholder info for map
