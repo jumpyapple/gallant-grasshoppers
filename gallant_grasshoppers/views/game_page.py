@@ -76,6 +76,7 @@ class GamePage(BasePage):
         c = Component(right_half, 1,
                       right_half.height // 5, children=[curr_string], selectable=False)
         c.set_styles({"center": True})
+        self.renderstate.set_prop(("total_boxes_c", c))
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
         update_box.set_wh(right_half.width-2, right_half.height // 2-1)
         update_box.set_styles({"border": True})
@@ -86,9 +87,7 @@ class GamePage(BasePage):
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
-        if key == " ":
-            self.state.makeBox()
-        elif key == "q":
+        if key == "q":
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))
