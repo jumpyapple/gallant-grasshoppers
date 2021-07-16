@@ -6,33 +6,32 @@ class ManualPhasePage(BasePage):
 
     def render(self) -> None:
         """Render the game page."""
-        with self.term.cbreak(), self.term.hidden_cursor():
-            print(
-                self.term.home
-                + self.term.clear
-                + self.term.move_y(self.term.height // 2)
-            )
-            current_cash = self.state.getCash()
-            if current_cash <= 1:
-                if current_cash == 0:
-                    print(
-                        self.term.black_on_darkkhaki(
-                            self.term.center(f"There is no box D:")
-                        )
+        print(
+            self.term.home
+            + self.term.clear
+            + self.term.move_y(self.term.height // 2)
+        )
+        current_cash = self.state.getCash()
+        if current_cash <= 1:
+            if current_cash == 0:
+                print(
+                    self.term.black_on_darkkhaki(
+                        self.term.center(f"There is no box D:")
                     )
-                else:
-                    print(
-                        self.term.black_on_darkkhaki(
-                            self.term.center(f"There is {current_cash} box")
-                        )
-                    )
+                )
             else:
                 print(
                     self.term.black_on_darkkhaki(
-                        self.term.center(f"There are {current_cash} boxes")
+                        self.term.center(f"There is {current_cash} box")
                     )
                 )
-            print(self.term.move_y((self.term.height // 2) + 5) + self.term.center("Tap [Spacebar] to fold a box"))
+        else:
+            print(
+                self.term.black_on_darkkhaki(
+                    self.term.center(f"There are {current_cash} boxes")
+                )
+            )
+        print(self.term.move_y((self.term.height // 2) + 5) + self.term.center("Tap [Spacebar] to fold a box"))
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
