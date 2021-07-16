@@ -7,7 +7,7 @@ from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
 from render.utils import StateManager
 
-from .styleTypes import styles
+from .styleTypes import bg_color, color, styles
 from .utils.terminal import get_term as terminal
 
 
@@ -57,6 +57,7 @@ class Component:
         self.callback = None
         self.window = window
         if window:
+            self.styles = self.window.styles
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
             self.width = self.window.width
@@ -107,7 +108,10 @@ class Component:
         if self.window is not None and self.window.styles:
             try:
                 if self.window.styles["color"]:
-                    next_text = self.window.styles["color"]
+                    next_text = color(self, self.window.styles["color"])
+
+                if self.window.styles["bg-color"]:
+                    next_text += bg_color(self, self.window.styles["bg-color"])
             except KeyError:
                 pass
         return text + next_text
