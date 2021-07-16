@@ -1,3 +1,6 @@
+import io
+import sys
+
 from .styleTypes import styles
 from .utils.terminal import get_term as terminal
 
@@ -89,7 +92,14 @@ class Component:
 
     def draw_component(self) -> bool:
         """Draws component"""
+        old_stdout = sys.stdout  # all this buffers the output so it can
+        new_stdout = io.StringIO()  # come out all at once and the screen doesn't blink
+        sys.stdout = new_stdout
+        print(self.terminal.clear())
         print(self)
+        sys.stdout = old_stdout
+        print(new_stdout.getvalue())
+
         return True
 
     def set_wh(self, width: int = 0, height: int = 5,) -> None:
