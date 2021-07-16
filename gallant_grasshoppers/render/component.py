@@ -78,7 +78,10 @@ class Component:
             for key in keys:
                 text += styles[key](self, self.styles[key])
         for c, line in enumerate(self.children):
-            text += (self.terminal.move_xy(self.begin_x, self.begin_y + c)) + str(line)
+            if self.begin_x is None and self.begin_y is None:
+                text += self.terminal.move_xy(self.window.begin_x, self.window.begin_y+c) + str(line)
+                continue
+            text += self.terminal.move_xy(self.begin_x, self.begin_y + c) + str(line)
         return text
 
     def set_styles(self, stylesjson: dict) -> None:
