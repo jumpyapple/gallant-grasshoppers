@@ -176,7 +176,7 @@ class GameState:
             modifiers = upgrade.get("MODIFIERS", None)
             if modifiers is None:
                 return
-       
+
             for modifier in modifiers:
                 if modifier["modifier"] == "GENERAL":
                     if modifier["action"] == "MULTIPLY":
