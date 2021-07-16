@@ -1,3 +1,5 @@
+import time
+
 import render as r
 from lib.gamestate import GameState
 from render.component import Component
@@ -15,17 +17,17 @@ def main() -> None:
         "current_page": StartPage,
         "head_component": Component(None)
     })
-
-    while not is_exiting:
-        with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+    with term.fullscreen(), term.cbreak(), term.hidden_cursor():
+        while not is_exiting:
             # Start up check.
             r.utils.check_window_size()
 
-            term.clear()
             current_page = c.get_prop("current_page")(state, term, c)
             current_page.render()
 
-            key_press = term.inkey()
+            key_press = term.inkey(timeout=.5)
+            time.sleep(1.0/25)  # this helps with screen blinking and gives a smoother experience
+
             current_page.handle_input(key_press)
 
 
