@@ -1,5 +1,11 @@
 import io
 import sys
+from typing import Any, Callable, Union
+
+from blessed import Terminal
+from blessed.formatters import FormattingString, NullCallableString
+from blessed.keyboard import Keystroke
+from render.utils import StateManager
 
 from .styleTypes import styles
 from .utils.terminal import get_term as terminal
@@ -8,8 +14,15 @@ from .utils.terminal import get_term as terminal
 class Component:
     """Components are the main way to draw to the screen of the application"""
 
-    def __init__(self, window: object, begin_x: int = 0, begin_y: int = 0, children: list[any] = None,
-                 selectable: bool = False, id: str = None):
+    def __init__(
+        self,
+        window: object,
+        begin_x: int = 0,
+        begin_y: int = 0,
+        children: list[any] = None,
+        selectable: bool = False,
+        id: str = None,
+    ):
         """
         Parameters
 
@@ -59,17 +72,17 @@ class Component:
         """Returns Bool whether component is selectable"""
         return self.selectable
 
-    def set_callback(self, *args) -> None:
+    def set_callback(self, func: Callable[..., None], *args, **kwargs) -> None:
         """Sets callback function to be executed when selected"""
-        self.callback = (args[0], args[1])
+        self.callback = (func, args, kwargs)
 
     def select(self) -> None:
         """Exectues callback function"""
-        func = self.callback[0]
-        if self.callback[1]:
-            func(self.callback[1])
-            return
-        func()
+        # jumpyapple: we can use *args to unpack the list of arguments
+        # to be passed to the function.
+        # Oh I see why you are using tuple in StateManager.set_prop now.
+        func, args, kwargs = self.callback
+        func(*args, **kwargs)
 
     def __repr__(self):
         text = ""
@@ -105,7 +118,126 @@ class Component:
 
         return True
 
-    def set_wh(self, width: int = 0, height: int = 5,) -> None:
+    def set_wh(
+        self,
+        width: int = 0,
+        height: int = 5,
+    ) -> None:
         """Set width and height"""
         self.width = width
         self.height = height
+
+
+class PopupMessage:
+    """
+    Represent a popup object.
+
+    :param term: The `blessed.Terminal` object.
+    :param render_state: The `StateManager` object.
+    :param message: The message to be displayed.
+    :param y: The y position of the popup middle line.
+    :param style: The style of the popup.
+    :param dismiss_key_name: The name of the key to dismiss the popup.
+    """
+
+    def __init__(
+        self,
+        term: Terminal,
+        render_state: StateManager,
+        message: str,
+        y: Union[int, Any] = None,
+        style: Union[FormattingString, NullCallableString] = None,
+        dismiss_key_name: str = "KEY_ESCAPE",
+    ) -> None:
+        self.term = term
+        self.render_state = render_state
+        self.message = message
+        self.dismiss_key_name = dismiss_key_name
+
+        self.y = y
+        if self.y is None:
+            self.y = term.height // 2
+
+        self.style = style
+        if self.style is None:
+            self.style = self.term.formatter("black_on_cyan3")
+
+    def render(self) -> None:
+        """Render the popup message."""
+        term = self.term
+        full_width = self.style(" " * term.width)
+        with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):
+            print(term.move_up + full_width)
+            print(self.style(term.center(self.message)))
+            print(full_width)
+
+    def handle_input(self, key: Union[str, Keystroke]) -> None:
+        """Handling the input"""
+        if getattr(key, "is_sequence", None) is not None:
+            if key.name == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))
+        elif key:
+            if key == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))
+
+
+class PopupPrompt(PopupMessage):
+    """
+    Represent a popup object.
+
+    :param term: The `blessed.Terminal` object.
+    :param render_state: The `StateManager` object.
+    :param message: The message to be displayed.
+    :param choices: The list of 2-tuple contains word and callback function.
+    :param kwargs: See kwargs of `PopupMessage` for detail.
+    """
+
+    def __init__(
+        self,
+        term: Terminal,
+        render_state: StateManager,
+        message: str,
+        choices: list[tuple],
+        **kwargs,
+    ) -> None:
+        super().__init__(term, render_state, message, **kwargs)
+        self.choices = choices
+
+        self.callbacks = []
+
+        choices = []
+        for choice, func in self.choices:
+            first_char = choice[0]
+            choices.append(f"[{first_char}]{choice[1:]}")
+
+            self.callbacks.append((first_char.lower(), func))
+        self.choice_text = " ".join(choices)
+
+    def render(self) -> None:
+        """Render the popup prompt."""
+        term = self.term
+
+        full_width = self.style(" " * term.width)
+        with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):
+            print(term.move_up + full_width)
+            print(self.style(term.center(self.message)))
+            print(self.style(term.center(self.choice_text)))
+            print(full_width)
+
+    def handle_input(self, key: Union[str, Keystroke]) -> None:
+        """Handling the input"""
+        if getattr(key, "is_sequence", None) is not None:
+            if key.name == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))
+                return
+            for first_char, func in self.callbacks:
+                if key == first_char:
+                    self.render_state.set_prop(("current_popup", None))
+                    func("")
+                    return
+        elif key:
+            for first_char, func in self.callbacks:
+                if key == first_char:
+                    self.render_state.set_prop(("current_popup", None))
+                    func("")
+                    break

@@ -39,9 +39,11 @@ class GameState:
 
         self.save_location = save_location
 
-        # Here is the current object of the game
-        self.state = self.loadGame(save_name, save_location)
+        # jumpyapple: We will delay the save loading until user decide if they
+        # want to continue from the save or start a new session.
 
+        # The `_` in the name is because we will be using @property.
+        self._phase = "manual"  # the default phase is manual.
         self.bpt = 0
 
         # Here are all of the ones in the game
@@ -49,13 +51,32 @@ class GameState:
         self.available_achievements = loader.achievements
         self.available_generators = loader.generators
 
+    @property
+    def phase(self) -> str:
+        """Getter of _phase."""
+        return self._phase
+
+    @phase.setter
+    def phase(self, phase: str) -> None:
+        """Setter of _phase."""
+        self._phase = phase
+
     # TODO will this ever be needed other than in testing.
     def __deleteSave(self) -> None:
         """Deletes the current save"""
         os.remove(self.save_location)
 
+    def newGame(self) -> None:
+        """Return from template the empty save game."""
+        self.save_location = f"{DEFAULT_SAVE_LOCATION}/{DEFAULT_SAVE_NAME}"
+
+        with open(SAVE_TEMPLATE, "r") as f:
+            return json.load(f)
+
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
+        self.state["phase"] = self._phase
+
         state_as_string = json.dumps(self.state)
         with open(self.save_location, "w") as File:
             File.write(state_as_string)
