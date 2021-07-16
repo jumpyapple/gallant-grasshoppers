@@ -91,7 +91,7 @@ class GameState:
         self.state[CASH] = self.state[CASH] + amount
         return True
 
-    def buyUpgrade(self, upgrade_id: str) -> None:
+    def buyUpgrade(self, upgrade_id: str) -> bool:
         """*Given the upgrade id of an upgrade decrease the cash of the player adding upgrade to their list*"""
         # TODO index the available instead so that you don't need to do a search every time
         upgrade_to_buy = next(
@@ -101,7 +101,6 @@ class GameState:
                 if upgrade["ID"] == upgrade_id
             )
         )
-        # TODO maybe change this into have a more intuitive location for cost
         cost = next(
             (
                 requirement.get("amount")
@@ -111,10 +110,13 @@ class GameState:
             0,
         )
 
-        #  TODO fail if the player does not have enough cash
+        if self.getCash()-cost < 0:
+            return False
 
         self.changeCash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
+        self.recalculateBPT()
+        return True
 
     def buyGenerator(self, generator_id: str) -> bool:
         """Given the generatorId add the generator to your list of generators
@@ -160,15 +162,42 @@ class GameState:
         generators = self.getGenerators()
 
         new_bpt = 0
-        for generator in generators:
-            bpt = generator["BPT"]
-            amount = generator["amount"]
-            new_bpt = new_bpt + (bpt * amount)
-        self.bpt = new_bpt
 
-        # TODO Now add the multiplyers of the upgrades
-        upgrades = self.getUpgrades()
-        print(upgrades)
+        bpt_obj = {}
+        for generator in generators:
+            bpt_obj[generator["ID"]] = {
+                "bpt": generator["BPT"],
+                "amount": generator["amount"],
+                "multiplier": 1
+            }
+
+        general_upgrade_modifier = 1
+        for upgrade in self.getUpgrades():
+            modifiers = upgrade.get("MODIFIERS", None)
+            if modifiers is None:
+                return
+       
+            for modifier in modifiers:
+                if modifier["modifier"] == "GENERAL":
+                    if modifier["action"] == "MULTIPLY":
+                        general_upgrade_modifier = general_upgrade_modifier * modifier["amount"]
+                    else:
+                        general_upgrade_modifier = general_upgrade_modifier + modifier["amount"]
+                elif modifier["type"] == "GENERATOR" and modifier["id"] in bpt_obj:
+                    generator_id = modifier["id"]
+
+                    multiplier = bpt_obj[generator_id].get("multiplier", 1)
+                    if modifier["action"] == "MULTIPLY":
+                        multiplier = multiplier * modifier["amount"]
+                    else:
+                        multiplier = multiplier + modifier["amount"]
+
+        new_bpt = 0
+        for generator in bpt_obj.values():
+            new_bpt = new_bpt + (generator["bpt"] * generator["amount"] * generator["multiplier"])
+        new_bpt = new_bpt * general_upgrade_modifier
+
+        self.bpt = new_bpt
 
     def makeBox(self) -> None:
         """Function will make a single box"""

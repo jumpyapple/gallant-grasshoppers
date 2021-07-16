@@ -16,7 +16,8 @@
 		}
 	],
 	"MODIFIERS": [{
-		"modifier": "SPEED",
+		"type": "GENERATOR",
+		"id": "KINDERGARTEN_CLASS",
 		"amount": 2,
 		"action": "MULTIPLY"
 	}]
@@ -33,6 +34,11 @@
 			"type": "GENERATOR",
 			"id": "AMAZON_WORKER"
 		}
-	]
+	],
+	"MODIFIERS": [{
+		"modifier": "GENERAL",
+		"amount": 2,
+		"action": "MULTIPLY"
+	}]
 }
 ]
