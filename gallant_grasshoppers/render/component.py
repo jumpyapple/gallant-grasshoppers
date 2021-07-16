@@ -7,7 +7,7 @@ from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
 from render.utils import StateManager
 
-from .styleTypes import styles
+from .styleTypes import bg_color, color, styles
 from .utils.terminal import get_term as terminal
 
 
@@ -55,10 +55,13 @@ class Component:
         self.styles = None
         self.id = id
         self.callback = None
+        self.window = window
         if window:
-            self.window = window
+            self.styles = self.window.styles
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
+            self.width = self.window.width
+            self.height = self.window.height
 
     def get_id(self) -> str:
         """Gets Id"""
@@ -85,14 +88,33 @@ class Component:
         func(*args, **kwargs)
 
     def __repr__(self):
-        text = ""
+        text = self.terminal.normal
         if self.styles:
             keys = self.styles.keys()
             for key in keys:
-                text += styles[key](self, self.styles[key])
+                output = styles[key](self, self.styles[key])
+                if output:
+                    text += output
+
+        # Write out text
         for c, line in enumerate(self.children):
-            text += (self.terminal.move_xy(self.begin_x, self.begin_y + c)) + str(line)
-        return text
+            if self.begin_x is None and self.begin_y is None:
+                text += self.terminal.move_xy(self.window.begin_x, self.window.begin_y+c) + str(line)
+                continue
+            line = str(line) + (self.width - len(str(line))-2) * " "
+            text += self.terminal.move_xy(self.begin_x, self.begin_y + c) + str(line)
+
+        next_text = self.terminal.normal
+        if self.window is not None and self.window.styles:
+            try:
+                if self.window.styles["color"]:
+                    next_text = color(self, self.window.styles["color"])
+
+                if self.window.styles["bg-color"]:
+                    next_text += bg_color(self, self.window.styles["bg-color"])
+            except KeyError:
+                pass
+        return text + next_text
 
     def set_styles(self, stylesjson: dict) -> None:
         """Sets styleTypes for a component"""

@@ -5,7 +5,7 @@ import render as r
 from blessed import Terminal
 from lib.gamestate import DEFAULT_SAVE_LOCATION, DEFAULT_SAVE_NAME, GameState
 from render.component import Component, PopupMessage
-from views import StartPage
+from views import GamePage, StartPage
 
 DEBUG = True
 term = r.terminal()
@@ -50,27 +50,33 @@ def main() -> None:
         c.set_prop(("is_save_exist", False))
 
     try:
-
+        key_press = None
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             while not c.get_prop("is_exiting"):
+                key_press = term.inkey(timeout=0.1)
+                if key_press == " " and c.get_prop("current_page") == GamePage:
+                    state.makeBox()
+                    print(c.get_prop("total_boxes_c"))
+                    continue
                 r.utils.check_window_size()
 
                 if c.get_prop("is_in_game"):
                     achievement_checking(term, state, c)
 
                 current_page = c.get_prop("current_page")(state, term, c)
+                start = time.time()
                 current_page.render()
-
+                end = time.time()
+                print(end - start)
                 # If there is any popup, we are rendering it on top
                 # of everything else.
                 popup = c.get_prop("current_popup")
                 if popup:
                     popup.render()
 
-                key_press = term.inkey(timeout=0.5)
-                time.sleep(
-                    1.0 / 25
-                )  # this helps with screen blinking and gives a smoother experience
+                # time.sleep(
+                #     1.0 / 25
+                # )  # this helps with screen blinking and gives a smoother experience
 
                 # TODO: jumpyapple - Add a trap for ESC key.
                 # This may have to be in each page since ESC may be used to dismiss
