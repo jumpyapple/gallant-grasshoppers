@@ -134,7 +134,10 @@ class PopupMessage:
     :param message: The message to be displayed.
     :param y: The y position of the popup middle line.
     :param style: The style of the popup.
-    :param dismiss_key_name: The name of the key to dismiss the popup.
+    :param dismiss_key_name: The name of the key to dismiss the popup. If `auto_dismiss` is True, this is ignored.
+    :param auto_dismiss: If True, the popup will be removed after the render function is called
+    more than `dismiss_after` times.
+    :param dismiss_after: The amount of ticks before the popup is removed.
     """
 
     def __init__(
@@ -145,11 +148,16 @@ class PopupMessage:
         y: Union[int, Any] = None,
         style: Union[FormattingString, NullCallableString] = None,
         dismiss_key_name: str = "KEY_ESCAPE",
+        auto_dismiss: bool = True,
+        dismiss_after: int = 4,
     ) -> None:
         self.term = term
         self.render_state = render_state
         self.message = message
         self.dismiss_key_name = dismiss_key_name
+        self.auto_dismiss = auto_dismiss
+        self.dismiss_after = dismiss_after
+        self.ticks = 0
 
         self.y = y
         if self.y is None:
@@ -161,6 +169,12 @@ class PopupMessage:
 
     def render(self) -> None:
         """Render the popup message."""
+        # Assume that this got call every `tick` in the main loop.
+        if self.auto_dismiss:
+            self.ticks += 1
+            if self.ticks > self.dismiss_after:
+                self.render_state.set_prop(("current_popup", None))
+
         term = self.term
         full_width = self.style(" " * term.width)
         with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):

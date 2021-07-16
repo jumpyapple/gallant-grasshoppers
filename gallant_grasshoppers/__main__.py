@@ -24,7 +24,7 @@ def achievement_checking(
     if state.getCash() > 0 and state.getCash() <= 1 and not is_achievement_received:
         is_achievement_received = True
         popup = PopupMessage(
-            term, render_state, "Your first box! [ESC to dismiss]", y=4
+            term, render_state, "Your first box!", y=4
         )
         render_state.set_prop(("current_popup", popup))
 
@@ -77,7 +77,7 @@ def main() -> None:
                 # sub-menu/dialog/etc.
 
                 # If there is a popup, it will receive the input first.
-                if popup:
+                if popup and not popup.auto_dismiss:
                     popup.handle_input(key_press)
                 else:
                     current_page.handle_input(key_press)
