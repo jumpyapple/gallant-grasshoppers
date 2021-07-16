@@ -39,8 +39,8 @@ class GameState:
 
         self.save_location = save_location
 
-        # Here is the current object of the game
-        self.state = self.loadGame(save_name, save_location)
+        # jumpyapple: We will delay the save loading until user decide if they
+        # want to continue from the save or start a new session.
 
         self.bpt = 0
 
@@ -53,6 +53,13 @@ class GameState:
     def __deleteSave(self) -> None:
         """Deletes the current save"""
         os.remove(self.save_location)
+
+    def newGame(self) -> None:
+        """Return from template the empty save game."""
+        self.save_location = f"{DEFAULT_SAVE_LOCATION}/{DEFAULT_SAVE_NAME}"
+
+        with open(SAVE_TEMPLATE, "r") as f:
+            return json.load(f)
 
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""

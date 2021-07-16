@@ -63,4 +63,6 @@ class GamePage(BasePage):
         if key == " ":
             self.state.makeBox()
         elif key == "q":
-            exit(0)
+            # Save the session.
+            self.state.saveGame()
+            self.renderstate.set_prop(("is_exiting", True))

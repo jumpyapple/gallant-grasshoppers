@@ -59,17 +59,17 @@ class Component:
         """Returns Bool whether component is selectable"""
         return self.selectable
 
-    def set_callback(self, *args) -> None:
+    def set_callback(self, func, *args, **kwargs) -> None:
         """Sets callback function to be executed when selected"""
-        self.callback = (args[0], args[1])
+        self.callback = (func, args, kwargs)
 
     def select(self) -> None:
         """Exectues callback function"""
-        func = self.callback[0]
-        if self.callback[1]:
-            func(self.callback[1])
-            return
-        func()
+        # jumpyapple: we can use *args to unpack the list of arguments
+        # to be passed to the function.
+        # Oh I see why you are using tuple in StateManager.set_prop now.
+        func, args, kwargs = self.callback
+        func(*args, **kwargs)
 
     def __repr__(self):
         text = ""

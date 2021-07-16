@@ -1,3 +1,4 @@
+import json
 
 import render as r  # ignore this. it is correct syntax
 from blessed import Terminal
@@ -34,6 +35,9 @@ class StartPage(BasePage):
         self.comps = []
         self.current_cursor = None
 
+        # TODO: jumpyapple - Since we will be re-using the UI element. We create only them once.
+
+
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
         main = self.renderstate.get_prop("head_component")
@@ -42,11 +46,21 @@ class StartPage(BasePage):
         c.set_wh(5, 5)
         c2 = Component(main, self.term.width // 2, self.term.height - 1, ["Exit"], selectable=True, id="exit")
         c2.set_wh(1, 1)
-        c3 = Component(main, self.term.width // 2, self.term.height - 4, ["Next Page"], selectable=True, id="next")
+        c3 = Component(main, self.term.width // 2, self.term.height - 4, ["New session"], selectable=True, id="next")
         c3.set_wh(1, 1)
         c2.set_callback(exit, 0)
-        c3.set_callback(self.renderstate.set_prop, ("current_page", GamePage))
-        main.set_children([c, c3, c2])
+        c3.set_callback(self.new_game_handler)
+
+        # Add a "continue" button if there is a save file.
+        is_save_exist = self.renderstate.get_prop("is_save_exist")
+        if is_save_exist:
+            continue_btn = Component(main, self.term.width // 2, self.term.height - 7, ["Continue"], selectable=True, id="continue")
+            continue_btn.set_wh(1, 1)
+            continue_btn.set_callback(self.continue_handler)
+            main.set_children([c, continue_btn, c3, c2])
+        else:
+            main.set_children([c, c3, c2])
+
         children = main.get_children()
         self.comps = []
         for i in children:
@@ -79,3 +93,13 @@ class StartPage(BasePage):
             elif key.name == "KEY_UP":
                 self.current_cursor = self.comps[self.comps.index(self.current_cursor) - 1]
                 self.renderstate.set_prop(("cursor", self.current_cursor))
+
+    def new_game_handler(self):
+        # jumypapple: Now, we are loading the data.
+        # TODO: jumpyapple - ask for confirmation if a save is already exist.
+        self.state.state = self.state.newGame()
+        self.renderstate.set_prop(("current_page", GamePage))
+
+    def continue_handler(self):
+        self.state.state = self.state.loadGame(None, None)
+        self.renderstate.set_prop(("current_page", GamePage))
