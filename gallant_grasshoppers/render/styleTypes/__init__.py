@@ -7,8 +7,8 @@ from .color import color
 styles = {
     "color": color,
     "bg-color": bg_color,
+    "center": center,
     "border": border,
     "margin": None,
     "padding": None,
-    "center": center,
 }

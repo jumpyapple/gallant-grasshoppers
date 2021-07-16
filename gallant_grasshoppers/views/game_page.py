@@ -55,8 +55,9 @@ class GamePage(BasePage):
         current_cash = self.state.getCash()
         curr_string = f"Boxes Folded: {current_cash}"
 
-        c = Component(right_half, right_half.width // 2 - len(str(curr_string)) // 2,
+        c = Component(right_half, 1,
                       right_half.height // 5, children=[curr_string], selectable=False)
+        c.set_styles({"center": True})
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
         update_box.set_wh(right_half.width-2, right_half.height // 2)
         update_box.set_styles({"border": True})

@@ -59,6 +59,8 @@ class Component:
         if window:
             self.begin_x += window.begin_x
             self.begin_y += window.begin_y
+            self.width = self.window.width
+            self.height = self.window.height
 
     def get_id(self) -> str:
         """Gets Id"""
@@ -92,10 +94,13 @@ class Component:
                 output = styles[key](self, self.styles[key])
                 if output:
                     text += output
+
+        # Write out text
         for c, line in enumerate(self.children):
             if self.begin_x is None and self.begin_y is None:
                 text += self.terminal.move_xy(self.window.begin_x, self.window.begin_y+c) + str(line)
                 continue
+            line = str(line) + (self.width - len(str(line))-2) * " "
             text += self.terminal.move_xy(self.begin_x, self.begin_y + c) + str(line)
 
         next_text = self.terminal.normal
