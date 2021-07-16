@@ -1,5 +1,9 @@
 import io
 import sys
+from typing import Union
+
+from blessed.formatters import FormattingString, NullCallableString
+from blessed.keyboard import Keystroke
 
 from .styleTypes import styles
 from .utils.terminal import get_term as terminal
@@ -108,22 +112,51 @@ class Component:
         self.height = height
 
 
-class Popup:
+class PopupMessage:
+    """
+    Represent a popup object.
 
-    def __init__(self, term, render_state, message: str) -> None:
+    :param term: The `blessed.Terminal` object.
+    :param render_state: The `StateManager` object.
+    :param message: The message to be displayed.
+    :param y: The y position of the popup middle line.
+    :param style: The style of the popup.
+    :param dismiss_key_name: The name of the key to dismiss the popup.
+    """
+    def __init__(
+        self,
+        term,
+        render_state,
+        message: str,
+        y=None,
+        style: Union[FormattingString, NullCallableString] = None,
+        dismiss_key_name: str = "KEY_ESCAPE",
+    ) -> None:
         self.term = term
         self.render_state = render_state
         self.message = message
+        self.dismiss_key_name = dismiss_key_name
+
+        self.y = y
+        if self.y is None:
+            self.y = term.height // 2
+
+        self.style = style
+        if self.style is None:
+            self.style = self.term.formatter("black_on_cyan3")
 
     def render(self) -> None:
         term = self.term
-        full_width = term.black_on_darkkhaki(" " * term.width)
-        with term.cbreak(), term.hidden_cursor(), term.location(0, term.height // 2):
+        full_width = self.style(" " * term.width)
+        with term.cbreak(), term.hidden_cursor(), term.location(0, self.y):
             print(term.move_up + full_width)
-            print(term.black_on_darkkhaki(term.center(self.message)))
+            print(self.style(term.center(self.message)))
             print(full_width)
 
-    def handle_input(self, key: str) -> None:
-        if key == " ":
-            # by default, dismissing the popup using spacebar.
-            self.render_state.set_prop(("current_popup", None))
+    def handle_input(self, key: Union[str, Keystroke]) -> None:
+        if getattr(key, "is_sequence", None) is not None:
+            if key.name == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))
+        elif key:
+            if key == self.dismiss_key_name:
+                self.render_state.set_prop(("current_popup", None))

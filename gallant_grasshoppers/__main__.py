@@ -3,7 +3,7 @@ from pathlib import Path
 
 import render as r
 from lib.gamestate import GameState, DEFAULT_SAVE_LOCATION, DEFAULT_SAVE_NAME
-from render.component import Component, Popup
+from render.component import Component, PopupMessage
 from views import StartPage
 
 DEBUG = True
@@ -12,10 +12,11 @@ term = r.terminal()
 is_achievement_received = False
 
 def achievement_checking(term, state, render_state):
+    # TODO: jumpyapple - Moving this to GameState?
     global is_achievement_received
-    if state.getCash() > 4 and state.getCash() <= 5 and not is_achievement_received:
+    if state.getCash() > 0 and state.getCash() <= 1 and not is_achievement_received:
         is_achievement_received = True
-        popup = Popup(term, render_state, "Your first box!")
+        popup = PopupMessage(term, render_state, "Your first box!", y=4)
         render_state.set_prop(("current_popup", popup))
 
 def main() -> None:
@@ -57,6 +58,10 @@ def main() -> None:
                 key_press = term.inkey(timeout=.5)
                 time.sleep(1.0/25)  # this helps with screen blinking and gives a smoother experience
 
+                # TODO: jumpyapple - Add a trap for ESC key.
+                # This may have to be in each page since ESC may be used to dismiss
+                # sub menu.
+
                 # If there is a popup, it will receive the input first.
                 if popup:
                     popup.handle_input(key_press)
@@ -68,7 +73,7 @@ def main() -> None:
         else:
             with term.cbreak():
                 print(term.home + term.clear)
-                popup = Popup(term, c, f"Unexpected error D: [{str(e)}]")
+                popup = PopupMessage(term, c, f"Unexpected error D: [{str(e)}]")
                 popup.render()
                 term.inkey()
     # Saving the game state back to file is handled by the GamePage.
