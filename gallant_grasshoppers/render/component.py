@@ -106,3 +106,24 @@ class Component:
         """Set width and height"""
         self.width = width
         self.height = height
+
+
+class Popup:
+
+    def __init__(self, term, render_state, message: str) -> None:
+        self.term = term
+        self.render_state = render_state
+        self.message = message
+
+    def render(self) -> None:
+        term = self.term
+        full_width = term.black_on_darkkhaki(" " * term.width)
+        with term.cbreak(), term.hidden_cursor(), term.location(0, term.height // 2):
+            print(term.move_up + full_width)
+            print(term.black_on_darkkhaki(term.center(self.message)))
+            print(full_width)
+
+    def handle_input(self, key: str) -> None:
+        if key == " ":
+            # by default, dismissing the popup using spacebar.
+            self.render_state.set_prop(("current_popup", None))
