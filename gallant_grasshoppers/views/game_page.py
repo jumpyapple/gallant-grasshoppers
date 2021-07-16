@@ -24,9 +24,12 @@ class GamePage(BasePage):
 
         def component_constructor(data: any, location: tuple) -> Component:
             """Constructs components"""
-            c = Component(left_half, location[0] // 2, location[1], children=[data])
-            c.begin_x -= r.utils.longest(c) // 2
-            c.set_wh(r.utils.longest(c), 10)
+            id = f"{data['ID']}"
+            desc = f"{data['DESCRIPTION']}"
+            bpt = f"BPT: {data['BPT']} PRICE:{data['COST']}"
+
+            c = Component(left_half, location[0] // 2, location[1], children=[id, desc, bpt])
+            c.set_wh(50, 10)
             c.set_styles({"border": True})
             return c
 
