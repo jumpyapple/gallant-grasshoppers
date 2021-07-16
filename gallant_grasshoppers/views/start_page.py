@@ -5,6 +5,7 @@ from blessed import Terminal
 
 from . import BasePage
 from .game_page import GamePage
+from .manual_phase import ManualPhasePage
 
 Component = r.Component
 boxer_logo = [
@@ -98,8 +99,17 @@ class StartPage(BasePage):
         # jumypapple: Now, we are loading the data.
         # TODO: jumpyapple - ask for confirmation if a save is already exist.
         self.state.state = self.state.newGame()
-        self.renderstate.set_prop(("current_page", GamePage))
+        self.renderstate.set_prop(("current_phase", "manual"))
+        self.renderstate.set_prop(("current_page", ManualPhasePage))
 
     def continue_handler(self):
         self.state.state = self.state.loadGame(None, None)
-        self.renderstate.set_prop(("current_page", GamePage))
+
+        # Determine which phase to load into.
+        self.state.phase = self.state.state["phase"]
+        self.renderstate.set_prop(("current_phase", self.state.phase))
+
+        if self.state.phase == "manual":
+            self.renderstate.set_prop(("current_page", ManualPhasePage))
+        elif self.state.phase == "game":
+            self.renderstate.set_prop(("current_page", GamePage))

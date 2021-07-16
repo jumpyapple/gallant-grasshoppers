@@ -31,3 +31,4 @@ sys.path.append("..")
 
 from .game_page import GamePage  # noqa: F401, E402
 from .start_page import StartPage  # noqa: F401, E402
+from .manual_phase import ManualPhasePage  # noqa: F401, E402

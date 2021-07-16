@@ -42,12 +42,22 @@ class GameState:
         # jumpyapple: We will delay the save loading until user decide if they
         # want to continue from the save or start a new session.
 
+        # The `_` in the name is because we will be using @property.
+        self._phase = "manual"  # the default phase is manual.
         self.bpt = 0
 
         # Here are all of the ones in the game
         self.available_upgrades = loader.upgrades
         self.available_achievements = loader.achievements
         self.available_generators = loader.generators
+
+    @property
+    def phase(self) -> str:
+        return self._phase
+
+    @phase.setter
+    def phase(self, phase: str) -> None:
+        self._phase = phase
 
     # TODO will this ever be needed other than in testing.
     def __deleteSave(self) -> None:
@@ -63,6 +73,8 @@ class GameState:
 
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
+        self.state["phase"] = self._phase
+
         state_as_string = json.dumps(self.state)
         with open(self.save_location, "w") as File:
             File.write(state_as_string)
