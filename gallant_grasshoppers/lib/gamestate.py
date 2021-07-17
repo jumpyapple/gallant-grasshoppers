@@ -75,6 +75,8 @@ class GameState:
         with open(SAVE_TEMPLATE, "r") as f:
             return json.load(f)
 
+        self.earnable_achievements = self.available_achievements
+
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
         self.state["phase"] = self._phase
@@ -105,6 +107,13 @@ class GameState:
 
         # Now load the data into the object as a dictionary
         return json.loads(save_data_as_string)
+
+    def compute_achivements(self) -> None:
+        """Reinit the earnable_achievements list."""
+        all_ids = set([item["ID"] for item in self.available_achievements])
+        earned_ids = set([item_id for item_id in self.state["achievements"]])
+        earnable_ids = all_ids - earned_ids
+        self.earnable_achievements = [item for item in self.available_achievements if item["ID"] in earnable_ids]
 
     def changeCash(self, amount: int) -> bool:
         """Function to be used when changing the users cash, use negative value to represent cost"""
@@ -304,3 +313,8 @@ class GameState:
     def getAchievements(self) -> list:
         """Getter functon for achievements list that the user unlocked"""
         return self.state[ACHIEVEMENTS]
+
+    def earnAchievement(self, id: str) -> None:
+        """Mark achievement as earned."""
+        self.state["achievements"].append(id)
+        self.earnable_achievements = [item for item in self.earnable_achievements if item["ID"] != id]

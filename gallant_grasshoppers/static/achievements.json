@@ -1,7 +1,15 @@
 [
     {
+      "ID": "FIST_BOX",
+      "DISPLAY_TEXT": "It's your first box!",
+      "CONDITION": {
+        "type": "CURRENCY",
+        "amount": 1
+      }
+    },
+    {
       "ID": "GAME_START",
-      "DISPLAY_TEXT": "Congats, you launched it",
+      "DISPLAY_TEXT": "Congrats, you launched it",
       "CONDITION": {
         "type": "CURRENCY",
         "amount": 100

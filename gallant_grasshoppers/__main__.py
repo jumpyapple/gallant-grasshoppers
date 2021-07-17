@@ -8,24 +8,30 @@ from views import StartPage
 
 DEBUG = True
 term = r.terminal()
-is_achievement_received = False
+
+
+def should_get_currency_achievement(achievement: dict, state: GameState) -> bool:
+    """Abstraction of the checking for currency achievement."""
+    return state.getCash() >= achievement["CONDITION"]["amount"]
 
 
 def achievement_checking(
     term: Terminal, state: GameState, render_state: r.utils.StateManager
 ) -> None:
-    """
-    Check achievement and display a popup.
+    """Check achievement and display a popup."""
+    for achievement in state.earnable_achievements:
+        if achievement["CONDITION"]["type"] == "CURRENCY":
+            if should_get_currency_achievement(achievement, state):
+                popup = PopupMessage(
+                    term, render_state, achievement["DISPLAY_TEXT"], y=4
+                )
+                render_state.set_prop(("current_popup", popup))
 
-    TODO: jumpyapple - Use the achievement data instead of the hard coded one.
-    """
-    global is_achievement_received
-    if state.getCash() > 0 and state.getCash() <= 1 and not is_achievement_received:
-        is_achievement_received = True
-        popup = PopupMessage(
-            term, render_state, "Your first box!", y=4
-        )
-        render_state.set_prop(("current_popup", popup))
+                # Mark achievement as earned.
+                state.earnAchievement(achievement["ID"])
+        elif achievement["CONDITION"]["type"] == "GENERATOR":
+            # TODO: jumpyapple - check more conditions.
+            pass
 
 
 def main() -> None:
