@@ -23,18 +23,18 @@ class GamePage(BasePage):
         left_half.set_wh(main.width // 2, main.height)
         left_half.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True})
 
-        def component_constructor(data: any, location: tuple) -> Component:
+        def component_constructor(data: any, location: tuple, letter: str) -> Component:
             """Constructs components"""
             id = f"{data['ID']}"
             desc = f"{data['DESCRIPTION']}"
             bpt = f"BPS: {data['BPT']} PRICE:{data['COST']} CURRENT: 0"
 
             c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
-                          children=[id, desc, bpt])
+                          children=[letter, id, desc, bpt])
             c.set_wh(int(left_half.width // 1.5), len(c.children)+2)
             for count, i in enumerate(c.children):
-                if len(i) > c.width:
-                    c.children[count] = i[:c.width-3]
+                if len(i) > c.width-2:
+                    c.children[count] = i[:c.width-2]
                     c.children.insert(count+1, i[c.width-3:])
                     c.height += 1
 
@@ -44,18 +44,17 @@ class GamePage(BasePage):
         # placeholder info for map
 
         to_be_comps = self.state.available_generators
+        letters = ["Q", "W", "E", "R"]
         loc_list = [(left_half.width // 2 - len(i) // 2, c*10 + 10 + left_half.height // 10)
                     for c, i in enumerate(to_be_comps)]
 
-        list_of_comps = map(component_constructor, to_be_comps, loc_list)
+        list_of_comps = map(component_constructor, to_be_comps, loc_list,
+                            [letters[c] for c, i in enumerate(to_be_comps)])
         menu_items = Component(left_half, 1, 1)
         menu_items.height = left_half.height // 10
-        menu_items.set_children([
-            Component(menu_items, 0, left_half.height // 20, ["1", "", "GENERATORS", "", ""]),
-            Component(menu_items, 0, left_half.height // 20, ["2", "", "UPGRADES", "", ""]),
-            Component(menu_items, 0, left_half.height // 20, ["3", "", "ACHIEVEMENTS", "", ""]),
-            Component(menu_items, 0, left_half.height // 20, ["4", "", "OPTIONS", "", ""]),
-        ])
+        menu_items.set_children([Component(menu_items, 0, left_half.height // 20,
+                                           [str(c+1), "", i] + ["" for _ in range(left_half.height // 20 - 3)])
+                                 for c, i in enumerate(["GENERATORS", "UPGRADES", "ACHIEVEMENTS", "OPTIONS"])])
 
         for c, i in enumerate(menu_items.children):
             i.begin_x = int((menu_items.width // 6) * c * 1.5 + (menu_items.width // 24))
@@ -87,7 +86,7 @@ class GamePage(BasePage):
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
-        if key == "q":
+        if key == "5":
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))

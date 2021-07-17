@@ -50,13 +50,11 @@ def main() -> None:
         c.set_prop(("is_save_exist", False))
 
     try:
-        key_press = None
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             while not c.get_prop("is_exiting"):
-                key_press = term.inkey(timeout=0.1)
+                key_press = term.inkey(timeout=.5)
                 if key_press == " " and c.get_prop("current_page") == GamePage:
                     state.makeBox()
-                    print(c.get_prop("total_boxes_c"))
                     continue
                 r.utils.check_window_size()
 
