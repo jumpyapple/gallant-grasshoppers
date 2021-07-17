@@ -225,7 +225,7 @@ class GameState:
 
         self.bpt = new_bpt
 
-    def tick(self):
+    def tick(self) -> None:
         """Tick the game forward to so the player can get cash ever tick"""
         self.state[CASH] = self.state[CASH] + self.bpt()
 

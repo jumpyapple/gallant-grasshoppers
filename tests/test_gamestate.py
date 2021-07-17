@@ -68,7 +68,7 @@ class GameStateTest(unittest.TestCase):
     def test_buyUpgradeTwo(self) -> None:
         """Try buying so upgrades"""
         self.Game.changeCash(10000)
-        upgrade_to_buy = self.Game.getPurchasableUpgrades()
+        # upgrade_to_buy = self.Game.getPurchasableUpgrades()
         # print(upgrade_to_buy)
 
 

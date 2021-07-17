@@ -41,7 +41,7 @@ class GamePage(BasePage):
             for count, i in enumerate(c.children):
                 if len(i) > c.width:
                     c.children[count] = i[: c.width - 3]
-                    c.children.insert(count + 1, i[c.width - 3 :])
+                    c.children.insert(count + 1, i[c.width - 3:])
                     c.height += 1
 
             c.set_styles(
