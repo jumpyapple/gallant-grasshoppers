@@ -32,8 +32,11 @@ class GamePage(BasePage):
             """Constructs components"""
             id = f"{data['ID']}"
             desc = f"{data['DESCRIPTION']}"
-            bpt = f"BPS: {data['BPT']} PRICE:{data['COST']} CURRENT: 0"
-            # {self.state.state['generators'][data['ID']]['amount']}"
+            try:
+                curr = {self.state.state['generators'][data['ID']]['amount']}
+            except KeyError:
+                curr = 0
+            bpt = f"BPS: {data['BPT']} PRICE:{data['COST']} CURRENT: {curr}"
 
             c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
                           children=[letter, id, desc, bpt])
@@ -54,11 +57,11 @@ class GamePage(BasePage):
                 }
             )
             return c
-        print(str(self.state.state["generators"]))
+        # print(str(self.state.state["generators"]))
 
         # placeholder info for map
 
-        to_be_comps = self.current_menu
+        to_be_comps = self.current_menu[:4]
         self.current_options = to_be_comps
         letters = ["Q", "W", "E", "R"]
         loc_list = [(left_half.width // 2 - len(i) // 2, c*10 + 10 + left_half.height // 10)
@@ -109,7 +112,6 @@ class GamePage(BasePage):
         """Handle input while in the game page."""
         nav_menu = ["1", "2", "3", "4"]
         game_menu = ["q", "w", "e", "r"]
-        print(key)
         if key in nav_menu:
             self.renderstate.set_prop(("current_menu", self.menus[nav_menu.index(key)]))
         if key in game_menu:

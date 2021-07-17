@@ -1,4 +1,4 @@
-import time
+# import time
 from pathlib import Path
 
 import render as r
@@ -63,10 +63,10 @@ def main() -> None:
                     achievement_checking(term, state, c)
 
                 current_page = c.get_prop("current_page")(state, term, c)
-                start = time.time()
+                # start = time.time()
                 current_page.render()
-                end = time.time()
-                print(end - start)
+                # end = time.time()
+                # print(end - start)
                 # If there is any popup, we are rendering it on top
                 # of everything else.
                 popup = c.get_prop("current_popup")
