@@ -8,8 +8,15 @@ from .utils.terminal import get_term as terminal
 class Component:
     """Components are the main way to draw to the screen of the application"""
 
-    def __init__(self, window: object, begin_x: int = 0, begin_y: int = 0, children: list[any] = None,
-                 selectable: bool = False, id: str = None):
+    def __init__(
+        self,
+        window: object,
+        begin_x: int = 0,
+        begin_y: int = 0,
+        children: list[any] = None,
+        selectable: bool = False,
+        id: str = None,
+    ):
         """
         Parameters
 

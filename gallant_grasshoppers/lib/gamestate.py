@@ -144,14 +144,15 @@ class GameState:
         has_generator = self.state[GENERATORS].get(generator_id, None)
         if has_generator is None:
             # If the player doesn't already own a generator add the data and set amount to 1
-            self.state[GENERATORS][generator_id] = generator_to_buy.update(
+            generator_to_buy.update(
                 {"amount": 1}
             )
+            self.state[GENERATORS][generator_id] = generator_to_buy
+
         else:
             self.state[GENERATORS][generator_id]["amount"] = (
                 self.state[GENERATORS][generator_id]["amount"] + 1
             )
-
         self.recalculateBPT()
 
         return True
@@ -164,7 +165,7 @@ class GameState:
         new_bpt = 0
 
         bpt_obj = {}
-        for generator in generators:
+        for generator in generators.values():
             bpt_obj[generator["ID"]] = {
                 "bpt": generator["BPT"],
                 "amount": generator["amount"],
@@ -178,7 +179,7 @@ class GameState:
                 return
 
             for modifier in modifiers:
-                if modifier["modifier"] == "GENERAL":
+                if modifier.get("modifier", None) == "GENERAL":
                     if modifier["action"] == "MULTIPLY":
                         general_upgrade_modifier = general_upgrade_modifier * modifier["amount"]
                     else:
@@ -198,6 +199,10 @@ class GameState:
         new_bpt = new_bpt * general_upgrade_modifier
 
         self.bpt = new_bpt
+
+    def tick(self):
+        """Tick the game forward to so the player can get cash ever tick"""
+        self.state[CASH] = self.state[CASH] + self.bpt()
 
     def makeBox(self) -> None:
         """Function will make a single box"""
@@ -219,18 +224,19 @@ class GameState:
                 generator_id in owned_generators
                 or generator.get("UNLOCK_ON", None) is None
             ):
-                purchasableGenerators.append(generator_id)
+                purchasableGenerators.append(generator)
                 continue
 
             unlock_on = generator.get("UNLOCK_ON", None)
             if unlock_on is not None and unlock_on in owned_generators:
-                purchasableGenerators.append(generator_id)
+                purchasableGenerators.append(generator)
         # TODO in the future it maybe shouldn't just return the IDs of the generators
         return purchasableGenerators
 
     def getPurchasableUpgrades(self) -> list:
         """Show all of the upgrades the player can buy that they don't already own"""
-        pass
+        # TODO this needs to actually return the purchaseble upgrades
+        return self.getUpgrades()
 
     def getState(self) -> None:
         """Get the current state of the game as a dict"""

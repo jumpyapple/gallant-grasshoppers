@@ -13,10 +13,9 @@ def main() -> None:
     is_exiting = False
 
     state = GameState()
-    c = r.utils.StateManager({
-        "current_page": StartPage,
-        "head_component": Component(None)
-    })
+    c = r.utils.StateManager(
+        {"current_page": StartPage, "head_component": Component(None)}
+    )
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         while not is_exiting:
             # Start up check.
@@ -25,8 +24,10 @@ def main() -> None:
             current_page = c.get_prop("current_page")(state, term, c)
             current_page.render()
 
-            key_press = term.inkey(timeout=.5)
-            time.sleep(1.0/25)  # this helps with screen blinking and gives a smoother experience
+            key_press = term.inkey(timeout=0.5)
+            time.sleep(
+                1.0 / 25
+            )  # this helps with screen blinking and gives a smoother experience
 
             current_page.handle_input(key_press)
 

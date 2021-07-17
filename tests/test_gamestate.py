@@ -56,6 +56,20 @@ class GameStateTest(unittest.TestCase):
         self.assertEqual(len(self.Game.getGenerators()), 0)
         self.assertEqual(len(self.Game.getPurchasableGenerators()), 2)
 
+    def test_buyGenerator(self) -> None:
+        """Try buying upgrades"""
+        self.Game.changeCash(10000)
+        generator_to_buy = self.Game.getPurchasableGenerators()[0]
+        generator_to_buy_id = generator_to_buy["ID"]
+        self.assertEqual(len(self.Game.getGenerators()), 0)
+        self.Game.buyGenerator(generator_to_buy_id)
+        self.assertEqual(len(self.Game.getGenerators()), 1)
+
+    def test_buyUpgradeTwo(self) -> None:
+        """Try buying so upgrades"""
+        self.Game.changeCash(10000)
+        upgrade_to_buy = self.Game.getPurchasableUpgrades()
+        # print(upgrade_to_buy)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,3 @@
-
 from .border import border
 
 styles = {
@@ -7,5 +6,5 @@ styles = {
     "padding": None,
     "center": None,
     "color": None,
-    "bg-color": None
+    "bg-color": None,
 }
