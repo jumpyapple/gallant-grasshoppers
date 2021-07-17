@@ -16,6 +16,15 @@
       }
     },
     {
+        "ID": ":p",
+        "DISPLAY_TEXT": "It's prime time!",
+        "CONDITION":{
+            "type": "GENERATOR",
+            "amount": 1,
+            "generator_id": "AMAZON_WORKER"
+        }
+    },
+    {
         "ID": "BORK",
         "DISPLAY_TEXT": "Boxes have made them sentient, what a joy, more love boxes",
         "CONDITION":{

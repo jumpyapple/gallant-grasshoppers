@@ -38,10 +38,6 @@ class GameState:
         loader = Loader()
 
         self.save_location = save_location
-
-        # jumpyapple: We will delay the save loading until user decide if they
-        # want to continue from the save or start a new session.
-
         self.state = self.loadGame(save_name, save_location)
 
         # The `_` in the name is because we will be using @property.
@@ -74,8 +70,6 @@ class GameState:
 
         with open(SAVE_TEMPLATE, "r") as f:
             return json.load(f)
-
-        self.earnable_achievements = self.available_achievements
 
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
