@@ -170,6 +170,7 @@ class GameState:
             self.state[GENERATORS][generator_id]["amount"] = (
                 self.state[GENERATORS][generator_id]["amount"] + 1
             )
+        print(f"BUYING {generator_id}")
 
         self.recalculateBPT()
 

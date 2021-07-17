@@ -39,6 +39,7 @@ def main() -> None:
             "current_page": StartPage,
             "current_popup": None,
             "head_component": Component(None),
+            "current_menu": state.available_generators
         }
     )
 

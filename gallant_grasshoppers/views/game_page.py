@@ -14,6 +14,9 @@ class GamePage(BasePage):
         super().__init__(state, term, renderstate)
         self.comps = []
         self.current_cursor = None
+        self.current_options = None
+        self.menus = [self.state.available_generators, self.state.available_upgrades]
+        self.current_menu = renderstate.get_prop("current_menu")
 
     def render(self) -> None:
         """Render the game page."""
@@ -28,10 +31,12 @@ class GamePage(BasePage):
             id = f"{data['ID']}"
             desc = f"{data['DESCRIPTION']}"
             bpt = f"BPS: {data['BPT']} PRICE:{data['COST']} CURRENT: 0"
+            # {self.state.state['generators'][data['ID']]['amount']}"
 
             c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
                           children=[letter, id, desc, bpt])
             c.set_wh(int(left_half.width // 1.5), len(c.children)+2)
+
             for count, i in enumerate(c.children):
                 if len(i) > c.width-2:
                     c.children[count] = i[:c.width-2]
@@ -40,10 +45,12 @@ class GamePage(BasePage):
 
             c.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True, "center": True})
             return c
+        print(str(self.state.state["generators"]))
 
         # placeholder info for map
 
-        to_be_comps = self.state.available_generators
+        to_be_comps = self.current_menu
+        self.current_options = to_be_comps
         letters = ["Q", "W", "E", "R"]
         loc_list = [(left_half.width // 2 - len(i) // 2, c*10 + 10 + left_half.height // 10)
                     for c, i in enumerate(to_be_comps)]
@@ -86,6 +93,13 @@ class GamePage(BasePage):
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
+        nav_menu = ["1", "2", "3", "4"]
+        game_menu = ["q", "w", "e", "r"]
+        print(key)
+        if key in nav_menu:
+            self.renderstate.set_prop(("current_menu", self.menus[nav_menu.index(key)]))
+        if key in game_menu:
+            self.state.buyGenerator(self.current_options[game_menu.index(key)]['ID'])
         if key == "5":
             # Save the session.
             self.state.saveGame()
