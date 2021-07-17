@@ -56,7 +56,7 @@ def main() -> None:
                 key_press = term.inkey(timeout=0.1)
                 if key_press == " " and c.get_prop("current_page") == GamePage:
                     state.makeBox()
-                    print(c.get_prop("total_boxes_c"))
+                    # print(c.get_prop("total_boxes_c"))
                     continue
                 r.utils.check_window_size()
 

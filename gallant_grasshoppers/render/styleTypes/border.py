@@ -1,4 +1,4 @@
-from ..utils.terminal import Terminal
+from ..utils.terminal import term
 
 
 def border(component: object, param: any = None) -> str:
@@ -7,7 +7,7 @@ def border(component: object, param: any = None) -> str:
     # width = 0
     if not param:
         return ""
-    terminal = Terminal()
+    terminal = term
     border = ""
     for i in range(component.height):
         border += terminal.move_xy(component.begin_x, component.begin_y + i) + "│"

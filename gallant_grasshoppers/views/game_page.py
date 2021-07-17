@@ -15,12 +15,10 @@ class GamePage(BasePage):
         self.comps = []
         self.current_cursor = None
 
-    def render(self) -> None:
-        """Render the game page."""
-        main = self.renderstate.get_prop("head_component")
-        main.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0]})
-        left_half = Component(main, 0, 0)
-        left_half.set_wh(main.width // 2, main.height)
+        self.main = self.renderstate.get_prop("head_component")
+        self.main.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0]})
+        left_half = Component(self.main, 0, 0)
+        left_half.set_wh(self.main.width // 2, self.main.height)
         left_half.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True})
 
         def component_constructor(data: any, location: tuple) -> Component:
@@ -31,11 +29,11 @@ class GamePage(BasePage):
 
             c = Component(left_half, location[0] - int(left_half.width // 1.5) // 2, location[1],
                           children=[id, desc, bpt])
-            c.set_wh(int(left_half.width // 1.5), len(c.children)+2)
+            c.set_wh(int(left_half.width // 1.5), len(c.children) + 2)
             for count, i in enumerate(c.children):
                 if len(i) > c.width:
-                    c.children[count] = i[:c.width-3]
-                    c.children.insert(count+1, i[c.width-3:])
+                    c.children[count] = i[:c.width - 3]
+                    c.children.insert(count + 1, i[c.width - 3:])
                     c.height += 1
 
             c.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True, "center": True})
@@ -44,7 +42,7 @@ class GamePage(BasePage):
         # placeholder info for map
 
         to_be_comps = self.state.available_generators
-        loc_list = [(left_half.width // 2 - len(i) // 2, c*10 + 10 + left_half.height // 10)
+        loc_list = [(left_half.width // 2 - len(i) // 2, c * 10 + 10 + left_half.height // 10)
                     for c, i in enumerate(to_be_comps)]
 
         list_of_comps = map(component_constructor, to_be_comps, loc_list)
@@ -66,24 +64,32 @@ class GamePage(BasePage):
         c_list = list(list_of_comps) + menu_items.children
         left_half.set_children(c_list)
 
-        right_half = Component(main, main.width // 2, 0)
-        right_half.set_wh(main.width // 2, main.height)
+        right_half = Component(self.main, self.main.width // 2, 0)
+        right_half.set_wh(self.main.width // 2, self.main.height)
         right_half.set_styles({"border": True})
 
         current_cash = self.state.getCash()
         curr_string = f"Boxes Folded: {current_cash}"
 
-        c = Component(right_half, 1,
+        self.c = Component(right_half, 1,
                       right_half.height // 5, children=[curr_string], selectable=False)
-        c.set_styles({"center": True})
-        self.renderstate.set_prop(("total_boxes_c", c))
+        self.c.set_styles({"center": True})
+        #self.renderstate.set_prop(("total_boxes_c", self.c))
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
-        update_box.set_wh(right_half.width-2, right_half.height // 2-1)
+        update_box.set_wh(right_half.width - 2, right_half.height // 2 - 1)
         update_box.set_styles({"border": True})
-        right_half.set_children([c, update_box])
-        main.set_children([left_half, right_half])
+        right_half.set_children([self.c, update_box])
+        self.main.set_children([left_half, right_half])
 
-        main.draw_component()
+    def render(self) -> None:
+        """Render the game page."""
+
+        current_cash = self.state.getCash()
+        curr_string = f"Boxes Folded: {current_cash}"
+        self.c.set_children([curr_string])
+        #self.renderstate.set_prop(("total_boxes_c", self.c))
+
+        self.main.draw_component()
 
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
