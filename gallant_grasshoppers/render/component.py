@@ -99,9 +99,11 @@ class Component:
         # Write out text
         for c, line in enumerate(self.children):
             if self.begin_x is None and self.begin_y is None:
-                text += self.terminal.move_xy(self.window.begin_x, self.window.begin_y+c) + str(line)
+                text += self.terminal.move_xy(
+                    self.window.begin_x, self.window.begin_y + c
+                ) + str(line)
                 continue
-            line = str(line) + (self.width - len(str(line))-2) * " "
+            line = str(line) + (self.width - len(str(line)) - 2) * " "
             text += self.terminal.move_xy(self.begin_x, self.begin_y + c) + str(line)
 
         next_text = self.terminal.normal
@@ -137,11 +139,7 @@ class Component:
 
         return True
 
-    def set_wh(
-        self,
-        width: int = 0,
-        height: int = 5,
-    ) -> None:
+    def set_wh(self, width: int = 0, height: int = 5,) -> None:
         """Set width and height"""
         self.width = width
         self.height = height

@@ -1,18 +1,21 @@
 [
     {
       "ID": "AMAZON_WORKER",
-      "DESCRIPTION": "High school kid who knows the wonders of boxes",
+      "DISPLAY_NAME": "Amazon Worker",
+      "DESCRIPTION": "High school kid who knows the wonders of boxes.",
       "BPT": 1,
       "COST": 15
     },
     {
       "ID": "KINDERGARTEN_CLASS",
-      "DESCRIPTION": "Your friend is a teacher and fond of boxes, he can get his class to help you out... for a few of the boxes",
+      "DISPLAY_NAME": "Kindergarten Class",
+      "DESCRIPTION": "Your friend is a teacher and fond of boxes, he can get his class to help you out... for a few of the boxes.",
       "BPT": 5,
       "COST": 70
     },
     {
       "ID": "BOXER_DOG",
+      "DISPLAY_NAME": "Boxer Pupper",
       "DESCRIPTION": "Woof woof... boof... bof.. box... boxes.. I want to make boxes...",
       "BPT": 15,
       "COST": 200,
@@ -20,9 +23,26 @@
     },
     {
       "ID": "MIKE_TYSON",
-      "DESCRIPTION": "Boxing using to run my life, now I run a life of boxes",
+      "DISPLAY_NAME": "Mike Tyson",
+      "DESCRIPTION": "Boxing using to run my life, now I run a life of boxes.",
       "BPT": 100,
       "COST": 5000,
       "UNLOCK_ON": "KINDERGARTEN_CLASS"
+    },
+    {
+      "ID": "SILLY_RABBIT",
+      "DISPLAY_NAME": "Cereal Rabbit TM",
+      "DESCRIPTION": "Cereal might be for kids... but the boxes are for everone.",
+      "BPT": 200,
+      "COST": 10000,
+      "UNLOCK_ON": "BOXER_DOG"
+    },
+    {
+      "ID": "SOCCER_PLAYER",
+      "DISPLAY_NAME": "Soccer players",
+      "DESCRIPTION": "These guys love poxes so much society punishes them for diving into them.",
+      "BPT": 500,
+      "COST": 50000,
+      "UNLOCK_ON": "MIKE_TYSON"
     }
   ]

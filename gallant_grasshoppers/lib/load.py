@@ -39,8 +39,3 @@ class Loader:
             loaded_json = File.read()
 
         return json.loads(loaded_json)
-
-
-if __name__ == "__main__":
-    static_data = Loader()
-    # print(static_data.upgrades)

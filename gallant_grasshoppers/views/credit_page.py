@@ -14,7 +14,9 @@ class CreditPage(BasePage):
             print("Developed by")
             print("Burned with [to be added]")
             print("Breno Cabral with [to be added]")
-            print("jumpyapple with anxiety, caffeine, and love (but mainly the first two)")
+            print(
+                "jumpyapple with anxiety, caffeine, and love (but mainly the first two)"
+            )
             print("KnoxZingVille with [to be added]")
             print("zachkaupp with [to be added]")
             print("Zix with [to be added]" + self.term.move_down)

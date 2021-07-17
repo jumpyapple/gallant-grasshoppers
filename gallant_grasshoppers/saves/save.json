@@ -1,1 +1,7 @@
-{"phase": "game", "cash": 0, "generators": [], "upgrades": [], "achievements": []}
+{
+	"phase": "game",
+	"cash": 0,
+	"generators": [],
+	"upgrades": [],
+	"achievements": []
+}
