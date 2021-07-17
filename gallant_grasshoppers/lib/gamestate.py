@@ -42,6 +42,8 @@ class GameState:
         # jumpyapple: We will delay the save loading until user decide if they
         # want to continue from the save or start a new session.
 
+        self.state = self.loadGame(save_name, save_location)
+
         # The `_` in the name is because we will be using @property.
         self._phase = "manual"  # the default phase is manual.
         self.bpt = 0

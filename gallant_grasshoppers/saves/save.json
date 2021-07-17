@@ -1,7 +1,7 @@
 {
-	"phase": "game",
-	"cash": 0,
-	"generators": [],
-	"upgrades": [],
-	"achievements": []
-}
+    "phase": "manual",
+    "cash": 0,
+    "generators": {},
+    "upgrades": [],
+    "achievements": []
+  }
