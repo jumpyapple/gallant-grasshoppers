@@ -1,4 +1,3 @@
-
 def get_selectables(c: object) -> list[object]:
     """Gets selectable components"""
     try:

@@ -9,7 +9,9 @@ def center(component: object, param: any = None) -> None:
     longest_length = longest(component)
 
     for c, i in enumerate(component.children):
-        spaces = (longest_length - len(str(i))) // 2 + (component.width-longest_length) // 2 - 1
-        component.children[c] = " "*spaces+str(component.children[c])
+        spaces = (longest_length - len(str(i))) // 2 + (
+            component.width - longest_length
+        ) // 2
+        component.children[c] = " " * spaces + str(component.children[c])
 
     return

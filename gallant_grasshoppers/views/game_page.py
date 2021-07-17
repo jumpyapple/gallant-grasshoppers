@@ -24,7 +24,9 @@ class GamePage(BasePage):
         main.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0]})
         left_half = Component(main, 0, 0)
         left_half.set_wh(main.width // 2, main.height)
-        left_half.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True})
+        left_half.set_styles(
+            {"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True}
+        )
 
         def component_constructor(data: any, location: tuple, letter: str) -> Component:
             """Constructs components"""
@@ -43,7 +45,14 @@ class GamePage(BasePage):
                     c.children.insert(count+1, i[c.width-3:])
                     c.height += 1
 
-            c.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0], "border": True, "center": True})
+            c.set_styles(
+                {
+                    "color": [204, 153, 0],
+                    "bg-color": [102, 51, 0],
+                    "border": True,
+                    "center": True,
+                }
+            )
             return c
         print(str(self.state.state["generators"]))
 
@@ -79,12 +88,17 @@ class GamePage(BasePage):
         current_cash = self.state.getCash()
         curr_string = f"Boxes Folded: {current_cash}"
 
-        c = Component(right_half, 1,
-                      right_half.height // 5, children=[curr_string], selectable=False)
+        c = Component(
+            right_half,
+            1,
+            right_half.height // 5,
+            children=[curr_string],
+            selectable=False,
+        )
         c.set_styles({"center": True})
         self.renderstate.set_prop(("total_boxes_c", c))
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
-        update_box.set_wh(right_half.width-2, right_half.height // 2-1)
+        update_box.set_wh(right_half.width - 2, right_half.height // 2 - 1)
         update_box.set_styles({"border": True})
         right_half.set_children([c, update_box])
         main.set_children([left_half, right_half])
