@@ -3,6 +3,7 @@ from blessed import Terminal
 
 from . import BasePage
 from .game_page import GamePage
+from .manual_phase import ManualPhasePage
 
 Component = r.Component
 boxer_logo = [
@@ -56,15 +57,43 @@ class StartPage(BasePage):
         c3 = Component(
             main,
             self.term.width // 2,
-            self.term.height - 4,
-            ["Next Page"],
+            self.term.height - 7,
+            ["New session"],
             selectable=True,
             id="next",
         )
         c3.set_wh(1, 1)
-        c2.set_callback(exit, 0)
-        c3.set_callback(self.renderstate.set_prop, ("current_page", GamePage))
-        main.set_children([c, c3, c2])
+        c2.set_callback(self.exit_handler)
+        c3.set_callback(self.new_game_handler)
+
+        credit_btn = Component(
+            main,
+            self.term.width // 2,
+            self.term.height - 4,
+            ["Credit"],
+            selectable=True,
+            id="credit",
+        )
+        credit_btn.set_wh(1, 1)
+        credit_btn.set_callback(self.credit_handler)
+
+        # Add a "continue" button if there is a save file.
+        is_save_exist = self.renderstate.get_prop("is_save_exist")
+        if is_save_exist:
+            continue_btn = Component(
+                main,
+                self.term.width // 2,
+                self.term.height - 10,
+                ["Continue"],
+                selectable=True,
+                id="continue",
+            )
+            continue_btn.set_wh(1, 1)
+            continue_btn.set_callback(self.continue_handler)
+            main.set_children([c, continue_btn, c3, credit_btn, c2])
+        else:
+            main.set_children([c, c3, credit_btn, c2])
+
         children = main.get_children()
         self.comps = []
         for i in children:
@@ -101,3 +130,42 @@ class StartPage(BasePage):
                     self.comps.index(self.current_cursor) - 1
                 ]
                 self.renderstate.set_prop(("cursor", self.current_cursor))
+
+    def new_game_handler(self) -> None:
+        """Handler for new game button."""
+        # jumypapple: Now, we are loading the data.
+        # TODO: jumpyapple - ask for confirmation if a save is already exist.
+        self.state.state = self.state.newGame()
+        self.renderstate.set_prop(("current_phase", "manual"))
+        self.renderstate.set_prop(("current_page", ManualPhasePage))
+        self.renderstate.set_prop(("is_in_game", True))
+
+    def continue_handler(self) -> None:
+        """Handler for continue button."""
+        self.state.state = self.state.loadGame(None, None)
+
+        # Determine which phase to load into.
+        self.state.phase = self.state.state["phase"]
+        self.renderstate.set_prop(("current_phase", self.state.phase))
+        self.renderstate.set_prop(("is_in_game", True))
+
+        if self.state.phase == "manual":
+            self.renderstate.set_prop(("current_page", ManualPhasePage))
+        elif self.state.phase == "game":
+            self.renderstate.set_prop(("current_page", GamePage))
+
+    def credit_handler(self) -> None:
+        """Handler for credit button."""
+        from .credit_page import CreditPage
+
+        self.renderstate.set_prop(("current_page", CreditPage))
+
+    def exit_handler(self) -> None:
+        """Handler for exit button."""
+        popup = r.PopupPrompt(
+            self.term,
+            self.renderstate,
+            "Are you sure?",
+            [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)],
+        )
+        self.renderstate.set_prop(("current_popup", popup))

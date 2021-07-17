@@ -71,5 +71,6 @@ class GameStateTest(unittest.TestCase):
         upgrade_to_buy = self.Game.getPurchasableUpgrades()
         # print(upgrade_to_buy)
 
+
 if __name__ == "__main__":
     unittest.main()

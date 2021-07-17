@@ -39,9 +39,11 @@ class GameState:
 
         self.save_location = save_location
 
-        # Here is the current object of the game
-        self.state = self.loadGame(save_name, save_location)
+        # jumpyapple: We will delay the save loading until user decide if they
+        # want to continue from the save or start a new session.
 
+        # The `_` in the name is because we will be using @property.
+        self._phase = "manual"  # the default phase is manual.
         self.bpt = 0
 
         # Here are all of the ones in the game
@@ -49,13 +51,32 @@ class GameState:
         self.available_achievements = loader.achievements
         self.available_generators = loader.generators
 
+    @property
+    def phase(self) -> str:
+        """Getter of _phase."""
+        return self._phase
+
+    @phase.setter
+    def phase(self, phase: str) -> None:
+        """Setter of _phase."""
+        self._phase = phase
+
     # TODO will this ever be needed other than in testing.
     def __deleteSave(self) -> None:
         """Deletes the current save"""
         os.remove(self.save_location)
 
+    def newGame(self) -> None:
+        """Return from template the empty save game."""
+        self.save_location = f"{DEFAULT_SAVE_LOCATION}/{DEFAULT_SAVE_NAME}"
+
+        with open(SAVE_TEMPLATE, "r") as f:
+            return json.load(f)
+
     def saveGame(self) -> None:
         """Convert state into a json string and save it to a file"""
+        self.state["phase"] = self._phase
+
         state_as_string = json.dumps(self.state)
         with open(self.save_location, "w") as File:
             File.write(state_as_string)
@@ -110,7 +131,7 @@ class GameState:
             0,
         )
 
-        if self.getCash()-cost < 0:
+        if self.getCash() - cost < 0:
             return False
 
         self.changeCash(-cost)
@@ -144,9 +165,7 @@ class GameState:
         has_generator = self.state[GENERATORS].get(generator_id, None)
         if has_generator is None:
             # If the player doesn't already own a generator add the data and set amount to 1
-            generator_to_buy.update(
-                {"amount": 1}
-            )
+            generator_to_buy.update({"amount": 1})
             self.state[GENERATORS][generator_id] = generator_to_buy
 
         else:
@@ -169,7 +188,7 @@ class GameState:
             bpt_obj[generator["ID"]] = {
                 "bpt": generator["BPT"],
                 "amount": generator["amount"],
-                "multiplier": 1
+                "multiplier": 1,
             }
 
         general_upgrade_modifier = 1
@@ -181,9 +200,13 @@ class GameState:
             for modifier in modifiers:
                 if modifier.get("modifier", None) == "GENERAL":
                     if modifier["action"] == "MULTIPLY":
-                        general_upgrade_modifier = general_upgrade_modifier * modifier["amount"]
+                        general_upgrade_modifier = (
+                            general_upgrade_modifier * modifier["amount"]
+                        )
                     else:
-                        general_upgrade_modifier = general_upgrade_modifier + modifier["amount"]
+                        general_upgrade_modifier = (
+                            general_upgrade_modifier + modifier["amount"]
+                        )
                 elif modifier["type"] == "GENERATOR" and modifier["id"] in bpt_obj:
                     generator_id = modifier["id"]
 
@@ -195,7 +218,9 @@ class GameState:
 
         new_bpt = 0
         for generator in bpt_obj.values():
-            new_bpt = new_bpt + (generator["bpt"] * generator["amount"] * generator["multiplier"])
+            new_bpt = new_bpt + (
+                generator["bpt"] * generator["amount"] * generator["multiplier"]
+            )
         new_bpt = new_bpt * general_upgrade_modifier
 
         self.bpt = new_bpt
