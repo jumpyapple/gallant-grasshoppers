@@ -12,7 +12,7 @@ class CreditPage(BasePage):
         with self.term.location(0, 0):
             print("Boxer" + self.term.move_down)
             print("Developed by")
-            print("Burned with [to be added]")
+            print("Burned with anger and caffeine")
             print("Breno Cabral with [to be added]")
             print(
                 "jumpyapple with anxiety, caffeine, and love (but mainly the first two)"
