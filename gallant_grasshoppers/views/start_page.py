@@ -1,3 +1,5 @@
+from typing import Any
+
 import render as r  # ignore this. it is correct syntax
 from blessed import Terminal
 
@@ -135,6 +137,16 @@ class StartPage(BasePage):
         """Handler for new game button."""
         # jumypapple: Now, we are loading the data.
         # TODO: jumpyapple - ask for confirmation if a save is already exist.
+        popup = r.PopupPrompt(
+            self.term,
+            self.renderstate,
+            "Are you sure?",
+            [("Yup", self.confirm_new_game), ("Nah", lambda e: e)]
+        )
+        self.renderstate.set_prop(("current_popup", popup))
+
+    def confirm_new_game(self, e: Any) -> None:
+        """Callback for the popup confirmation."""
         self.state.state = self.state.newGame()
         self.renderstate.set_prop(("current_phase", "manual"))
         self.renderstate.set_prop(("current_page", ManualPhasePage))
