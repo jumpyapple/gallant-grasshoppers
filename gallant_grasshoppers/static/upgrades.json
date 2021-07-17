@@ -1,18 +1,14 @@
 [{
-	"ID": "upgrade_id",
-	"DISPLAY_NAME": "Cool Upgrade",
-	"DISPLAY_DESCRIPTION": "Upgrade does cool stuff",
+	"ID": "TEACHER_PHD",
+	"DISPLAY_NAME": "Your friendget a PHD",
+	"DISPLAY_DESCRIPTION": "Now he can optimize the kids",
 	"REQUIREMENTS": [{
 			"type": "CURRENCY",
 			"amount": 1000
 		},
 		{
-			"type": "ACHIEVEMENT",
-			"id": "achievement_id"
-		},
-		{
-			"type": "UPGRADE",
-			"id": "upgrade_id"
+			"type": "GENERATOR",
+			"id": "KINDERGARTEN_CLASS"
 		}
 	],
 	"MODIFIERS": [{
@@ -28,7 +24,7 @@
 	"DISPLAY_DESCRIPTION": "Who knew paying your employees more would make them more productive?",
 	"REQUIREMENTS": [{
 			"type": "CURRENCY",
-			"amount": "1000000"
+			"amount": 10000
 		},
 		{
 			"type": "GENERATOR",

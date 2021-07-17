@@ -25,21 +25,21 @@ class GameStateTest(unittest.TestCase):
         self.assertIsNotNone(self.Game.available_generators)
         self.assertIsNotNone(self.Game.available_upgrades)
 
-    def test_buyUpgrade(self) -> None:
-        """Buy a single upgrade from the list"""
-        two_thousand = 2000
-        # First give yourself some funds
-        self.Game.changeCash(two_thousand)
+    # def test_buyUpgrade(self) -> None:
+    #     """Buy a single upgrade from the list"""
+    #     two_thousand = 2000
+    #     # First give yourself some funds
+    #     self.Game.changeCash(two_thousand)
 
-        upgrade_to_buy = self.Game.available_upgrades[0]
-        upgrade_id = upgrade_to_buy["ID"]
-        upgrade_cost = upgrade_to_buy["REQUIREMENTS"][0]["amount"]
+    #     upgrade_to_buy = self.Game.available_upgrades[0]
+    #     upgrade_id = upgrade_to_buy["ID"]
+    #     upgrade_cost = upgrade_to_buy["REQUIREMENTS"][0]["amount"]
 
-        self.Game.buyUpgrade(upgrade_id)
-        game_cash = self.Game.getCash()
+    #     self.Game.buyUpgrade(upgrade_id)
+    #     game_cash = self.Game.getCash()
 
-        self.assertEqual(len(self.Game.getUpgrades()), 1)
-        self.assertEqual(two_thousand - upgrade_cost, game_cash)
+    #     self.assertEqual(len(self.Game.getUpgrades()), 1)
+    #     self.assertEqual(two_thousand - upgrade_cost, game_cash)
 
     def test_changeCash(self) -> None:
         """Be able to inject extra cash into the players account but not go below zero"""
@@ -64,12 +64,22 @@ class GameStateTest(unittest.TestCase):
         self.assertEqual(len(self.Game.getGenerators()), 0)
         self.Game.buyGenerator(generator_to_buy_id)
         self.assertEqual(len(self.Game.getGenerators()), 1)
+        # print(self.Game.getGenerators())
 
     def test_buyUpgradeTwo(self) -> None:
-        """Try buying so upgrades"""
-        self.Game.changeCash(10000)
-        # upgrade_to_buy = self.Game.getPurchasableUpgrades()
-        # print(upgrade_to_buy)
+        """Try buying some upgrades"""
+        self.Game.changeCash(20000)
+        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 0)
+        purchasable_generators = self.Game.getPurchasableGenerators()
+        generator_to_buy1 = purchasable_generators[0]
+        generator_to_buy2 = purchasable_generators[1]
+        self.Game.buyGenerator(generator_to_buy1["ID"])
+
+        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 1)
+
+        self.Game.buyGenerator(generator_to_buy2["ID"])
+
+        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 2)
 
 
 if __name__ == "__main__":

@@ -239,31 +239,51 @@ class GameState:
         """Show all generators that the player can buy at any time
 
         Player must own at least 1 of the UNLOCK_ON requirement to unlock the other
-        TODO find a way to not have torecalculate all of this eventually - for now just do
-        TODO Right now the static/generators needs to be in order for this function to work as intended fix it
         """
         owned_generators = [generator["ID"] for generator in self.getGenerators()]
 
-        purchasableGenerators = []
+        purchasable_generators = []
         for generator in self.available_generators:
             generator_id = generator["ID"]
             if (
                 generator_id in owned_generators
                 or generator.get("UNLOCK_ON", None) is None
             ):
-                purchasableGenerators.append(generator)
+                purchasable_generators.append(generator)
                 continue
 
             unlock_on = generator.get("UNLOCK_ON", None)
             if unlock_on is not None and unlock_on in owned_generators:
-                purchasableGenerators.append(generator)
+                purchasable_generators.append(generator)
         # TODO in the future it maybe shouldn't just return the IDs of the generators
-        return purchasableGenerators
+        return purchasable_generators
 
     def getPurchasableUpgrades(self) -> list:
         """Show all of the upgrades the player can buy that they don't already own"""
-        # TODO this needs to actually return the purchaseble upgrades
-        return self.getUpgrades()
+        owned_upgrades = [upgrade["ID"] for upgrade in self.getUpgrades()]
+
+        purchasable_upgrades = []
+        for upgrade in self.available_upgrades:
+            upgrade_id = upgrade["ID"]
+            if any(upgrade_id in owned_upgrade for owned_upgrade in owned_upgrades):
+                continue
+            upgrade_requirements = upgrade.get("REQUIREMENTS", None)
+            display_upgrade = True
+            for requirement in upgrade_requirements:
+                requirement_type = requirement.get("type", None)
+                if requirement_type == "CURRENCY" and (
+                    self.getCash() - requirement.get("amount") < 0
+                ):
+                    display_upgrade = False
+                elif (
+                    requirement_type == "GENERATOR"
+                    and requirement.get("id", None) not in self.getGenerators()
+                ):
+                    display_upgrade = False
+            if display_upgrade is True:
+                purchasable_upgrades.append(upgrade)
+
+        return purchasable_upgrades
 
     def getState(self) -> None:
         """Get the current state of the game as a dict"""
