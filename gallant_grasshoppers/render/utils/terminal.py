@@ -1,8 +1,7 @@
 from blessed import Terminal
 
-# We will be reusing this object
-# instead of creating a new one.
-term = Terminal()
+term = Terminal()  # Reuse this object instead of creating a new one.
+
 
 def get_term() -> Terminal:
     """Get Terminal Object"""

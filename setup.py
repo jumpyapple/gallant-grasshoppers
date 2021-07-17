@@ -26,9 +26,7 @@ setup(
     author_email="",
     license="MIT",
     packages=["gallant_grasshoppers"],
-    install_requires=[
-        "blessed",
-    ],
+    install_requires=["blessed"],
     entry_points={
         "console_scripts": ["gallant-grasshoppers=gallant_grasshoppers.__main__:main"]
     },

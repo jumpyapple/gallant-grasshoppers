@@ -1,4 +1,4 @@
-import time
+# import time
 from pathlib import Path
 
 import render as r
@@ -39,6 +39,7 @@ def main() -> None:
             "current_page": StartPage,
             "current_popup": None,
             "head_component": Component(None),
+            "current_menu": state.available_generators
         }
     )
 
@@ -50,13 +51,11 @@ def main() -> None:
         c.set_prop(("is_save_exist", False))
 
     try:
-        key_press = None
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             while not c.get_prop("is_exiting"):
-                key_press = term.inkey(timeout=0.1)
+                key_press = term.inkey(timeout=.5)
                 if key_press == " " and c.get_prop("current_page") == GamePage:
                     state.makeBox()
-                    # print(c.get_prop("total_boxes_c"))
                     continue
                 r.utils.check_window_size()
 
@@ -64,10 +63,10 @@ def main() -> None:
                     achievement_checking(term, state, c)
 
                 current_page = c.get_prop("current_page")(state, term, c)
-                start = time.time()
+                # start = time.time()
                 current_page.render()
-                end = time.time()
-                print(end - start)
+                # end = time.time()
+                # print(end - start)
                 # If there is any popup, we are rendering it on top
                 # of everything else.
                 popup = c.get_prop("current_popup")

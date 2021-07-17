@@ -42,6 +42,8 @@ class GameState:
         # jumpyapple: We will delay the save loading until user decide if they
         # want to continue from the save or start a new session.
 
+        self.state = self.loadGame(save_name, save_location)
+
         # The `_` in the name is because we will be using @property.
         self._phase = "manual"  # the default phase is manual.
         self.bpt = 0
@@ -112,7 +114,7 @@ class GameState:
         self.state[CASH] = self.state[CASH] + amount
         return True
 
-    def buyUpgrade(self, upgrade_id: str) -> None:
+    def buyUpgrade(self, upgrade_id: str) -> bool:
         """*Given the upgrade id of an upgrade decrease the cash of the player adding upgrade to their list*"""
         # TODO index the available instead so that you don't need to do a search every time
         upgrade_to_buy = next(
@@ -122,7 +124,6 @@ class GameState:
                 if upgrade["ID"] == upgrade_id
             )
         )
-        # TODO maybe change this into have a more intuitive location for cost
         cost = next(
             (
                 requirement.get("amount")
@@ -132,10 +133,13 @@ class GameState:
             0,
         )
 
-        #  TODO fail if the player does not have enough cash
+        if self.getCash() - cost < 0:
+            return False
 
         self.changeCash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
+        self.recalculateBPT()
+        return True
 
     def buyGenerator(self, generator_id: str) -> bool:
         """Given the generatorId add the generator to your list of generators
@@ -163,14 +167,13 @@ class GameState:
         has_generator = self.state[GENERATORS].get(generator_id, None)
         if has_generator is None:
             # If the player doesn't already own a generator add the data and set amount to 1
-            self.state[GENERATORS][generator_id] = generator_to_buy.update(
-                {"amount": 1}
-            )
+            generator_to_buy.update({"amount": 1})
+            self.state[GENERATORS][generator_id] = generator_to_buy
+
         else:
             self.state[GENERATORS][generator_id]["amount"] = (
                 self.state[GENERATORS][generator_id]["amount"] + 1
             )
-
         self.recalculateBPT()
 
         return True
@@ -181,30 +184,109 @@ class GameState:
         generators = self.getGenerators()
 
         new_bpt = 0
-        for generator in generators:
-            bpt = generator["BPT"]
-            amount = generator["amount"]
-            new_bpt = new_bpt + (bpt * amount)
+
+        bpt_obj = {}
+        for generator in generators.values():
+            bpt_obj[generator["ID"]] = {
+                "bpt": generator["BPT"],
+                "amount": generator["amount"],
+                "multiplier": 1,
+            }
+
+        general_upgrade_modifier = 1
+        for upgrade in self.getUpgrades():
+            modifiers = upgrade.get("MODIFIERS", None)
+            if modifiers is None:
+                return
+
+            for modifier in modifiers:
+                if modifier.get("modifier", None) == "GENERAL":
+                    if modifier["action"] == "MULTIPLY":
+                        general_upgrade_modifier = (
+                            general_upgrade_modifier * modifier["amount"]
+                        )
+                    else:
+                        general_upgrade_modifier = (
+                            general_upgrade_modifier + modifier["amount"]
+                        )
+                elif modifier["type"] == "GENERATOR" and modifier["id"] in bpt_obj:
+                    generator_id = modifier["id"]
+
+                    multiplier = bpt_obj[generator_id].get("multiplier", 1)
+                    if modifier["action"] == "MULTIPLY":
+                        multiplier = multiplier * modifier["amount"]
+                    else:
+                        multiplier = multiplier + modifier["amount"]
+
+        new_bpt = 0
+        for generator in bpt_obj.values():
+            new_bpt = new_bpt + (
+                generator["bpt"] * generator["amount"] * generator["multiplier"]
+            )
+        new_bpt = new_bpt * general_upgrade_modifier
+
         self.bpt = new_bpt
 
-        # Now add the multiplyers of the upgrades
-        upgrades = self.getUpgrades()
-        print(upgrades)
+    def tick(self) -> None:
+        """Tick the game forward to so the player can get cash ever tick"""
+        self.state[CASH] = self.state[CASH] + self.bpt()
 
     def makeBox(self) -> None:
         """Function will make a single box"""
         self.state[CASH] = self.state[CASH] + 1
 
     def getPurchasableGenerators(self) -> list:
-        """Show all generators that the player can buy at any time"""
-        pass
+        """Show all generators that the player can buy at any time
+
+        Player must own at least 1 of the UNLOCK_ON requirement to unlock the other
+        """
+        owned_generators = [generator["ID"] for generator in self.getGenerators()]
+
+        purchasable_generators = []
+        for generator in self.available_generators:
+            generator_id = generator["ID"]
+            if (
+                generator_id in owned_generators
+                or generator.get("UNLOCK_ON", None) is None
+            ):
+                purchasable_generators.append(generator)
+                continue
+
+            unlock_on = generator.get("UNLOCK_ON", None)
+            if unlock_on is not None and unlock_on in owned_generators:
+                purchasable_generators.append(generator)
+        # TODO in the future it maybe shouldn't just return the IDs of the generators
+        return purchasable_generators
 
     def getPurchasableUpgrades(self) -> list:
         """Show all of the upgrades the player can buy that they don't already own"""
-        pass
+        owned_upgrades = [upgrade["ID"] for upgrade in self.getUpgrades()]
+
+        purchasable_upgrades = []
+        for upgrade in self.available_upgrades:
+            upgrade_id = upgrade["ID"]
+            if any(upgrade_id in owned_upgrade for owned_upgrade in owned_upgrades):
+                continue
+            upgrade_requirements = upgrade.get("REQUIREMENTS", None)
+            display_upgrade = True
+            for requirement in upgrade_requirements:
+                requirement_type = requirement.get("type", None)
+                if requirement_type == "CURRENCY" and (
+                    self.getCash() - requirement.get("amount") < 0
+                ):
+                    display_upgrade = False
+                elif (
+                    requirement_type == "GENERATOR"
+                    and requirement.get("id", None) not in self.getGenerators()
+                ):
+                    display_upgrade = False
+            if display_upgrade is True:
+                purchasable_upgrades.append(upgrade)
+
+        return purchasable_upgrades
 
     def getState(self) -> None:
-        """Get the current state of the game as s dict"""
+        """Get the current state of the game as a dict"""
         return self.state
 
     def getCash(self) -> int:
