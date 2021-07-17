@@ -231,6 +231,7 @@ class PopupPrompt(PopupMessage):
         choices: list[tuple],
         **kwargs,
     ) -> None:
+        kwargs["auto_dismiss"] = False
         super().__init__(term, render_state, message, **kwargs)
         self.choices = choices
 

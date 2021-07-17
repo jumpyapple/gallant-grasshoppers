@@ -1,11 +1,10 @@
-# import time
 from pathlib import Path
 
 import render as r
 from blessed import Terminal
 from lib.gamestate import DEFAULT_SAVE_LOCATION, DEFAULT_SAVE_NAME, GameState
 from render.component import Component, PopupMessage
-from views import GamePage, StartPage
+from views import StartPage
 
 DEBUG = True
 term = r.terminal()
@@ -53,10 +52,6 @@ def main() -> None:
     try:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
             while not c.get_prop("is_exiting"):
-                key_press = term.inkey(timeout=.5)
-                if key_press == " " and c.get_prop("current_page") == GamePage:
-                    state.makeBox()
-                    continue
                 r.utils.check_window_size()
 
                 if c.get_prop("is_in_game"):
@@ -73,9 +68,7 @@ def main() -> None:
                 if popup:
                     popup.render()
 
-                # time.sleep(
-                #     1.0 / 25
-                # )  # this helps with screen blinking and gives a smoother experience
+                key_press = term.inkey(timeout=.5)
 
                 # TODO: jumpyapple - Add a trap for ESC key.
                 # This may have to be in each page since ESC may be used to dismiss

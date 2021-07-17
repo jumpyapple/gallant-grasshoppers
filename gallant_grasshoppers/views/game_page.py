@@ -113,6 +113,8 @@ class GamePage(BasePage):
         """Handle input while in the game page."""
         nav_menu = ["1", "2", "3", "4"]
         game_menu = ["q", "w", "e", "r"]
+        if key == " ":
+            self.state.makeBox()
         if key in nav_menu:
             self.renderstate.set_prop(("current_menu", self.menus[nav_menu.index(key)]))
         if key in game_menu:

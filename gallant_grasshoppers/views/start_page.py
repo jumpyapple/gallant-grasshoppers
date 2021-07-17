@@ -166,6 +166,6 @@ class StartPage(BasePage):
             self.term,
             self.renderstate,
             "Are you sure?",
-            [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)],
+            [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)]
         )
         self.renderstate.set_prop(("current_popup", popup))
