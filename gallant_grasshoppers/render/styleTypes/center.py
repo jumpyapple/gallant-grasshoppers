@@ -1,4 +1,4 @@
-from ..utils.longest import longest
+from ..utils import longest
 
 
 def center(component: object, param: any = None) -> None:
