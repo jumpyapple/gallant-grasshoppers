@@ -6,7 +6,7 @@ from blessed import Terminal
 class BasePage:
     """Base class for a page."""
 
-    def __init__(self, state: object, term: Terminal, renderstate: object):
+    def __init__(self, state: object, term: Terminal, renderstate: dict):
         self.state = state
         self.term = term
         self.renderstate = renderstate

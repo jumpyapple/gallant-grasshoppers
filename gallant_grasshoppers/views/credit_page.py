@@ -27,4 +27,4 @@ class CreditPage(BasePage):
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
         if key == " ":
-            self.renderstate.set_prop(("current_page", StartPage))
+            self.renderstate["current_page"] = StartPage

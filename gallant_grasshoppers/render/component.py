@@ -6,7 +6,6 @@ from blessed import Terminal
 from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
 from render import term
-from render.utils import StateManager
 
 from .styleTypes import bg_color, color, styles
 
@@ -150,7 +149,7 @@ class PopupMessage:
     Represent a popup object.
 
     :param term: The `blessed.Terminal` object.
-    :param render_state: The `StateManager` object.
+    :param render_state: The dictionary of the states.
     :param message: The message to be displayed.
     :param y: The y position of the popup middle line.
     :param style: The style of the popup.
@@ -163,7 +162,7 @@ class PopupMessage:
     def __init__(
         self,
         term: Terminal,
-        render_state: StateManager,
+        render_state: dict,
         message: str,
         y: Union[int, Any] = None,
         style: Union[FormattingString, NullCallableString] = None,
@@ -193,7 +192,7 @@ class PopupMessage:
         if self.auto_dismiss:
             self.ticks += 1
             if self.ticks > self.dismiss_after:
-                self.render_state.set_prop(("current_popup", None))
+                self.render_state["current_popup"] = None
 
         term = self.term
         full_width = self.style(" " * term.width)
@@ -206,10 +205,10 @@ class PopupMessage:
         """Handling the input"""
         if getattr(key, "is_sequence", None) is not None:
             if key.name == self.dismiss_key_name:
-                self.render_state.set_prop(("current_popup", None))
+                self.render_state["current_popup"] = None
         elif key:
             if key == self.dismiss_key_name:
-                self.render_state.set_prop(("current_popup", None))
+                self.render_state["current_popup"] = None
 
 
 class PopupPrompt(PopupMessage):
@@ -217,7 +216,7 @@ class PopupPrompt(PopupMessage):
     Represent a popup object.
 
     :param term: The `blessed.Terminal` object.
-    :param render_state: The `StateManager` object.
+    :param render_state: The dictionary of the states.
     :param message: The message to be displayed.
     :param choices: The list of 2-tuple contains word and callback function.
     :param kwargs: See kwargs of `PopupMessage` for detail.
@@ -226,7 +225,7 @@ class PopupPrompt(PopupMessage):
     def __init__(
         self,
         term: Terminal,
-        render_state: StateManager,
+        render_state: dict,
         message: str,
         choices: list[tuple],
         **kwargs,
@@ -260,16 +259,16 @@ class PopupPrompt(PopupMessage):
         """Handling the input"""
         if getattr(key, "is_sequence", None) is not None:
             if key.name == self.dismiss_key_name:
-                self.render_state.set_prop(("current_popup", None))
+                self.render_state["current_popup"] = None
                 return
             for first_char, func in self.callbacks:
                 if key == first_char:
-                    self.render_state.set_prop(("current_popup", None))
+                    self.render_state["current_popup"] = None
                     func("")
                     return
         elif key:
             for first_char, func in self.callbacks:
                 if key == first_char:
-                    self.render_state.set_prop(("current_popup", None))
+                    self.render_state["current_popup"] = None
                     func("")
                     break

@@ -16,8 +16,8 @@ class GamePage(BasePage):
         self.current_cursor = None
         self.current_options = None
         self.menus = [self.state.available_generators, self.state.available_upgrades]
-        self.current_menu = renderstate.get_prop("current_menu")
-        self.main = self.renderstate.get_prop("head_component")
+        self.current_menu = renderstate["current_menu"]
+        self.main = self.renderstate["head_component"]
         self.main.set_styles({"color": [204, 153, 0], "bg-color": [102, 51, 0]})
         left_half = Component(self.main, 0, 0)
         left_half.set_wh(self.main.width // 2, self.main.height)
@@ -93,7 +93,7 @@ class GamePage(BasePage):
             selectable=False,
         )
         self.c.set_styles({"center": True})
-        self.renderstate.set_prop(("total_boxes_c", c))
+        self.renderstate["total_boxes_c"] = c
         update_box = Component(right_half, 1, right_half.height // 2, children=[""])
         update_box.set_wh(right_half.width - 2, right_half.height // 2 - 1)
         update_box.set_styles({"border": True})
@@ -115,11 +115,11 @@ class GamePage(BasePage):
         if key == " ":
             self.state.makeBox()
         if key in nav_menu:
-            self.renderstate.set_prop(("current_menu", self.menus[nav_menu.index(key)]))
+            self.renderstate["current_menu"] = self.menus[nav_menu.index(key)]
         if key in game_menu:
             self.state.buyGenerator(self.current_options[game_menu.index(key)]['ID'])
         if key == "5":
             # Save the session.
             self.state.saveGame()
-            self.renderstate.set_prop(("is_exiting", True))
-            self.renderstate.set_prop(("is_in_game", False))
+            self.renderstate["is_exiting"] = True
+            self.renderstate["is_in_game"] = False

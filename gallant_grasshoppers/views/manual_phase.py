@@ -40,10 +40,10 @@ class ManualPhasePage(BasePage):
             if self.state.getCash() > 50:
                 # Process to the next phase.
                 self.state.phase = "game"
-                self.renderstate.set_prop(("current_phase", "game"))
-                self.renderstate.set_prop(("current_page", GamePage))
+                self.renderstate["current_phase"] = "game"
+                self.renderstate["current_page"] = GamePage
         elif key == "q":
             # Save the session.
             self.state.saveGame()
-            self.renderstate.set_prop(("is_exiting", True))
-            self.renderstate.set_prop(("is_in_game", False))
+            self.renderstate["is_exiting"] = True
+            self.renderstate["is_in_game"] = False

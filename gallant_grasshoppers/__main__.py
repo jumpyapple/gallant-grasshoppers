@@ -26,7 +26,7 @@ def should_get_generator_archievement(achievement: dict, state: GameState) -> bo
 
 
 def achievement_checking(
-    term: Terminal, state: GameState, render_state: r.utils.StateManager
+    term: Terminal, state: GameState, render_state: dict
 ) -> None:
     """Check achievement and display a popup."""
     for achievement in state.earnable_achievements:
@@ -35,7 +35,7 @@ def achievement_checking(
                 popup = PopupMessage(
                     term, render_state, achievement["DISPLAY_TEXT"], y=4
                 )
-                render_state.set_prop(("current_popup", popup))
+                render_state["current_popup"] = popup
 
                 # Mark achievement as earned.
                 state.earnAchievement(achievement["ID"])
@@ -44,7 +44,7 @@ def achievement_checking(
                 popup = PopupMessage(
                     term, render_state, achievement["DISPLAY_TEXT"], y=4
                 )
-                render_state.set_prop(("current_popup", popup))
+                render_state["current_popup"] = popup
 
                 # Mark achievement as earned.
                 state.earnAchievement(achievement["ID"])
@@ -53,40 +53,38 @@ def achievement_checking(
 def main() -> None:
     """Starts up main function"""
     state = GameState()
-    c = r.utils.StateManager(
-        {
-            "is_exiting": False,
-            "is_in_game": False,
-            "current_page": StartPage,
-            "current_popup": None,
-            "head_component": Component(None),
-            "current_menu": state.available_generators
-        }
-    )
+    c = {
+        "is_exiting": False,
+        "is_in_game": False,
+        "current_page": StartPage,
+        "current_popup": None,
+        "head_component": Component(None),
+        "current_menu": state.available_generators
+    }
 
     # Check if there is a save file.
     save_file_path = Path(DEFAULT_SAVE_LOCATION) / DEFAULT_SAVE_NAME
     if save_file_path.exists():
-        c.set_prop(("is_save_exist", True))
+        c["is_save_exist"] = True
     else:
-        c.set_prop(("is_save_exist", False))
+        c["is_save_exist"] = False
 
     try:
         with term.fullscreen(), term.cbreak(), term.hidden_cursor():
-            while not c.get_prop("is_exiting"):
+            while not c["is_exiting"]:
                 r.utils.check_window_size()
 
-                if c.get_prop("is_in_game"):
+                if c["is_in_game"]:
                     achievement_checking(term, state, c)
 
-                current_page = c.get_prop("current_page")(state, term, c)
+                current_page = c["current_page"](state, term, c)
                 # start = time.time()
                 current_page.render()
                 # end = time.time()
                 # print(end - start)
                 # If there is any popup, we are rendering it on top
                 # of everything else.
-                popup = c.get_prop("current_popup")
+                popup = c["current_popup"]
                 if popup:
                     popup.render()
 

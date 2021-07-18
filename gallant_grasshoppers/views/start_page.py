@@ -38,7 +38,7 @@ class StartPage(BasePage):
 
     def render(self) -> None:
         """Creates start page, can be called from signal module and directly"""
-        main = self.renderstate.get_prop("head_component")
+        main = self.renderstate["head_component"]
         c = Component(
             main,
             self.term.width // 2 - len(boxer_logo[1]) // 2,
@@ -80,7 +80,7 @@ class StartPage(BasePage):
         credit_btn.set_callback(self.credit_handler)
 
         # Add a "continue" button if there is a save file.
-        is_save_exist = self.renderstate.get_prop("is_save_exist")
+        is_save_exist = self.renderstate["is_save_exist"]
         if is_save_exist:
             continue_btn = Component(
                 main,
@@ -106,10 +106,10 @@ class StartPage(BasePage):
 
         for i in self.comps:
             try:
-                if self.renderstate.get_prop("cursor").get_id() == i.get_id():
+                if self.renderstate["cursor"].get_id() == i.get_id():
                     self.current_cursor = i
                     break
-            except AttributeError:
+            except KeyError:
                 break
 
         self.current_cursor.set_styles({"border": True})
@@ -126,12 +126,12 @@ class StartPage(BasePage):
                 self.current_cursor = self.comps[
                     (self.comps.index(self.current_cursor) + 1) % len(self.comps)
                 ]
-                self.renderstate.set_prop(("cursor", self.current_cursor))
+                self.renderstate["cursor"] = self.current_cursor
             elif key.name == "KEY_UP":
                 self.current_cursor = self.comps[
                     self.comps.index(self.current_cursor) - 1
                 ]
-                self.renderstate.set_prop(("cursor", self.current_cursor))
+                self.renderstate["cursor"] = self.current_cursor
 
     def new_game_handler(self) -> None:
         """Handler for new game button."""
@@ -143,16 +143,16 @@ class StartPage(BasePage):
             "Are you sure?",
             [("Yup", self.confirm_new_game), ("Nah", lambda e: e)]
         )
-        self.renderstate.set_prop(("current_popup", popup))
+        self.renderstate["current_popup"] = popup
 
     def confirm_new_game(self, e: Any) -> None:
         """Callback for the popup confirmation."""
         self.state.state = self.state.newGame()
         self.state.compute_achivements()
 
-        self.renderstate.set_prop(("current_phase", "manual"))
-        self.renderstate.set_prop(("current_page", ManualPhasePage))
-        self.renderstate.set_prop(("is_in_game", True))
+        self.renderstate["current_phase"] = "manual"
+        self.renderstate["current_page"] = ManualPhasePage
+        self.renderstate["is_in_game"] = True
 
     def continue_handler(self) -> None:
         """Handler for continue button."""
@@ -161,19 +161,19 @@ class StartPage(BasePage):
 
         # Determine which phase to load into.
         self.state.phase = self.state.state["phase"]
-        self.renderstate.set_prop(("current_phase", self.state.phase))
-        self.renderstate.set_prop(("is_in_game", True))
+        self.renderstate["current_phase"] = self.state.phase
+        self.renderstate["is_in_game"] = True
 
         if self.state.phase == "manual":
-            self.renderstate.set_prop(("current_page", ManualPhasePage))
+            self.renderstate["current_page"] = ManualPhasePage
         elif self.state.phase == "game":
-            self.renderstate.set_prop(("current_page", GamePage))
+            self.renderstate["current_page"] = GamePage
 
     def credit_handler(self) -> None:
         """Handler for credit button."""
         from .credit_page import CreditPage
 
-        self.renderstate.set_prop(("current_page", CreditPage))
+        self.renderstate["current_page"] = CreditPage
 
     def exit_handler(self) -> None:
         """Handler for exit button."""
@@ -183,4 +183,4 @@ class StartPage(BasePage):
             "Are you sure?",
             [("Yup", lambda e: exit(0)), ("Nah", lambda e: e)]
         )
-        self.renderstate.set_prop(("current_popup", popup))
+        self.renderstate["current_popup"] = popup
