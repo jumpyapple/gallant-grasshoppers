@@ -38,7 +38,7 @@ class ManualPhasePage(BasePage):
         if key == " ":
             self.state.makeBox()
             if self.state.getCash() > 50:
-                # Process to next phase.
+                # Process to the next phase.
                 self.state.phase = "game"
                 self.renderstate.set_prop(("current_phase", "game"))
                 self.renderstate.set_prop(("current_page", GamePage))
@@ -46,4 +46,4 @@ class ManualPhasePage(BasePage):
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))
-            # TODO: jumpyapple - set is_in_game to False
+            self.renderstate.set_prop(("is_in_game", False))

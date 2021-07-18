@@ -33,3 +33,6 @@ build/
 .vscode/
 # MacOS
 .DS_Store
+
+# Game data
+saves/saves.json

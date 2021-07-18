@@ -105,7 +105,6 @@ class GamePage(BasePage):
         current_cash = self.state.getCash()
         curr_string = f"Boxes Folded: {current_cash}"
         self.c.set_children([curr_string])
-        # self.renderstate.set_prop(("total_boxes_c", self.c))
 
         self.main.draw_component()
 
@@ -123,4 +122,4 @@ class GamePage(BasePage):
             # Save the session.
             self.state.saveGame()
             self.renderstate.set_prop(("is_exiting", True))
-            # TODO: jumpyapple - set is_in_game to False OR when the ESC menu is used, do this in that.
+            self.renderstate.set_prop(("is_in_game", False))
