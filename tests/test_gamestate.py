@@ -10,6 +10,7 @@ class GameStateTest(unittest.TestCase):
         """Generic Game Setup"""
         # print('I know Im creating a new game every test... its been a while... :)')
         self.Game = GameState()
+        self.Game.state = self.Game.newGame()
         # return super().setUp()
 
     def test_ticker(self) -> None:

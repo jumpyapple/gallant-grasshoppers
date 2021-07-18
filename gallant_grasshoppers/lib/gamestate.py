@@ -38,7 +38,6 @@ class GameState:
         loader = Loader()
 
         self.save_location = save_location
-        self.state = self.loadGame(save_name, save_location)
 
         # The `_` in the name is because we will be using @property.
         self._phase = "manual"  # the default phase is manual.
