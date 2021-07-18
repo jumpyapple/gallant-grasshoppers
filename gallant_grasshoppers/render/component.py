@@ -7,7 +7,7 @@ from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
 from render import term
 
-from .styleTypes import bg_color, color, styles
+from .style_types import bg_color, color, styles
 
 
 class Component:
