@@ -12,13 +12,13 @@ term = r.term
 
 def should_get_currency_achievement(achievement: dict, state: GameState) -> bool:
     """Abstraction of the checking for currency achievement."""
-    return state.getCash() >= achievement["CONDITION"]["amount"]
+    return state.get_cash() >= achievement["CONDITION"]["amount"]
 
 
 def should_get_generator_archievement(achievement: dict, state: GameState) -> bool:
     """Abstraction of the checking for generator achievement."""
     generator_id = achievement["CONDITION"]["generator_id"]
-    generators = state.getGenerators()
+    generators = state.get_generators()
 
     if generator_id not in generators.keys():
         return False
@@ -38,7 +38,7 @@ def achievement_checking(
                 render_state["current_popup"] = popup
 
                 # Mark achievement as earned.
-                state.earnAchievement(achievement["ID"])
+                state.earn_achievement(achievement["ID"])
         elif achievement["CONDITION"]["type"] == "GENERATOR":
             if should_get_generator_archievement(achievement, state):
                 popup = PopupMessage(
@@ -47,7 +47,7 @@ def achievement_checking(
                 render_state["current_popup"] = popup
 
                 # Mark achievement as earned.
-                state.earnAchievement(achievement["ID"])
+                state.earn_achievement(achievement["ID"])
 
 
 def main() -> None:

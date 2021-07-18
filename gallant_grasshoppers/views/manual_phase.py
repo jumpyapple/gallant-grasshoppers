@@ -10,7 +10,7 @@ class ManualPhasePage(BasePage):
         print(
             self.term.home + self.term.clear + self.term.move_y(self.term.height // 2)
         )
-        current_cash = self.state.getCash()
+        current_cash = self.state.get_cash()
         if current_cash <= 1:
             if current_cash == 0:
                 print(
@@ -36,14 +36,14 @@ class ManualPhasePage(BasePage):
     def handle_input(self, key: str) -> None:
         """Handle input while in the game page."""
         if key == " ":
-            self.state.makeBox()
-            if self.state.getCash() > 50:
+            self.state.make_box()
+            if self.state.get_cash() > 50:
                 # Process to the next phase.
                 self.state.phase = "game"
                 self.renderstate["current_phase"] = "game"
                 self.renderstate["current_page"] = GamePage
         elif key == "q":
             # Save the session.
-            self.state.saveGame()
+            self.state.save_game()
             self.renderstate["is_exiting"] = True
             self.renderstate["is_in_game"] = False

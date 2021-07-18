@@ -147,8 +147,8 @@ class StartPage(BasePage):
 
     def confirm_new_game(self, e: Any) -> None:
         """Callback for the popup confirmation."""
-        self.state.state = self.state.newGame()
-        self.state.compute_achivements()
+        self.state.state = self.state.new_game()
+        self.state.compute_achievements()
 
         self.renderstate["current_phase"] = "manual"
         self.renderstate["current_page"] = ManualPhasePage
@@ -156,8 +156,8 @@ class StartPage(BasePage):
 
     def continue_handler(self) -> None:
         """Handler for continue button."""
-        self.state.state = self.state.loadGame(None, None)
-        self.state.compute_achivements()
+        self.state.state = self.state.load_game(None, None)
+        self.state.compute_achievements()
 
         # Determine which phase to load into.
         self.state.phase = self.state.state["phase"]

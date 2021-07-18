@@ -25,17 +25,17 @@ class Loader:
         achievementsPath: str = ACHIEVEMENTS_FILE_LOCATION,
         generatorsPath: str = GENERATORS_FILE_LOCATION,
     ) -> None:
-        self.upgrades = self.loadJSON(upgradesPath)
-        self.achievements = self.loadJSON(achievementsPath)
-        self.generators = self.loadJSON(generatorsPath)
+        self.upgrades = self.load_json(upgradesPath)
+        self.achievements = self.load_json(achievementsPath)
+        self.generators = self.load_json(generatorsPath)
 
-    def loadJSON(self, filePath: str) -> dict:
+    def load_json(self, file_path: str) -> dict:
         """Generic json loader that checks to see if the file exists before loading in data as a dict"""
-        if not path.exists(filePath):
-            raise Exception(f"Could not find file in location {filePath}")
+        if not path.exists(file_path):
+            raise Exception(f"Could not find file in location {file_path}")
 
         loaded_json = None
-        with open(filePath, "r") as File:
-            loaded_json = File.read()
+        with open(file_path, "r") as file:
+            loaded_json = file.read()
 
         return json.loads(loaded_json)

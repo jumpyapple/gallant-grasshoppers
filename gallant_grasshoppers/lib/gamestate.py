@@ -63,22 +63,22 @@ class GameState:
         """Deletes the current save"""
         os.remove(self.save_location)
 
-    def newGame(self) -> None:
+    def new_game(self) -> None:
         """Return from template the empty save game."""
         self.save_location = f"{DEFAULT_SAVE_LOCATION}/{DEFAULT_SAVE_NAME}"
 
         with open(SAVE_TEMPLATE, "r") as f:
             return json.load(f)
 
-    def saveGame(self) -> None:
+    def save_game(self) -> None:
         """Convert state into a json string and save it to a file"""
         self.state["phase"] = self._phase
 
         state_as_string = json.dumps(self.state)
-        with open(self.save_location, "w") as File:
-            File.write(state_as_string)
+        with open(self.save_location, "w") as file:
+            file.write(state_as_string)
 
-    def loadGame(self, save_name: str, save_location: str) -> None:
+    def load_game(self, save_name: str, save_location: str) -> None:
         """Check if a save already exists, if not create a clean one for first boot"""
         self.save_location = (
             f"{save_location}/{save_name}"
@@ -89,34 +89,34 @@ class GameState:
         save_data_as_string = ""
         # Check to see if that save file exists, if not populate it with default data so that the game can start
         if not os.path.exists(self.save_location):
-            with open(SAVE_TEMPLATE, "r") as File:
-                save_data_as_string = File.read()
+            with open(SAVE_TEMPLATE, "r") as file:
+                save_data_as_string = file.read()
 
-            with open(self.save_location, "w") as File:
-                File.write(save_data_as_string)
+            with open(self.save_location, "w") as file:
+                file.write(save_data_as_string)
         else:
-            with open(self.save_location, "r") as File:
-                save_data_as_string = File.read()
+            with open(self.save_location, "r") as file:
+                save_data_as_string = file.read()
 
         # Now load the data into the object as a dictionary
         return json.loads(save_data_as_string)
 
-    def compute_achivements(self) -> None:
+    def compute_achievements(self) -> None:
         """Reinit the earnable_achievements list."""
         all_ids = set([item["ID"] for item in self.available_achievements])
         earned_ids = set([item_id for item_id in self.state["achievements"]])
         earnable_ids = all_ids - earned_ids
         self.earnable_achievements = [item for item in self.available_achievements if item["ID"] in earnable_ids]
 
-    def changeCash(self, amount: int) -> bool:
+    def change_cash(self, amount: int) -> bool:
         """Function to be used when changing the users cash, use negative value to represent cost"""
-        if (self.getCash() + amount) < 0:
+        if (self.get_cash() + amount) < 0:
             return False
 
         self.state[CASH] = self.state[CASH] + amount
         return True
 
-    def buyUpgrade(self, upgrade_id: str) -> bool:
+    def buy_upgrade(self, upgrade_id: str) -> bool:
         """*Given the upgrade id of an upgrade decrease the cash of the player adding upgrade to their list*"""
         # TODO index the available instead so that you don't need to do a search every time
         upgrade_to_buy = next(
@@ -135,15 +135,15 @@ class GameState:
             0,
         )
 
-        if self.getCash() - cost < 0:
+        if self.get_cash() - cost < 0:
             return False
 
-        self.changeCash(-cost)
+        self.change_cash(-cost)
         self.state[UPGRADES].append(upgrade_to_buy)
-        self.recalculateBPT()
+        self.recalculate_bpt()
         return True
 
-    def buyGenerator(self, generator_id: str) -> bool:
+    def buy_generator(self, generator_id: str) -> bool:
         """Given the generatorId add the generator to your list of generators
 
         Remember to check if there is enough funds
@@ -163,7 +163,7 @@ class GameState:
             return False
 
         cost = generator_to_buy["COST"]
-        if self.getCash() - cost < 0:
+        if self.get_cash() - cost < 0:
             return False
 
         has_generator = self.state[GENERATORS].get(generator_id, None)
@@ -176,14 +176,14 @@ class GameState:
             self.state[GENERATORS][generator_id]["amount"] = (
                 self.state[GENERATORS][generator_id]["amount"] + 1
             )
-        self.recalculateBPT()
+        self.recalculate_bpt()
 
         return True
 
-    def recalculateBPT(self) -> None:
+    def recalculate_bpt(self) -> None:
         """Use all upgrades and generators to recalculate the new value for bpt"""
         # First do all calculations that are relating to the generators
-        generators = self.getGenerators()
+        generators = self.get_generators()
 
         new_bpt = 0
 
@@ -196,7 +196,7 @@ class GameState:
             }
 
         general_upgrade_modifier = 1
-        for upgrade in self.getUpgrades():
+        for upgrade in self.get_upgrades():
             modifiers = upgrade.get("MODIFIERS", None)
             if modifiers is None:
                 return
@@ -233,16 +233,16 @@ class GameState:
         """Tick the game forward to so the player can get cash ever tick"""
         self.state[CASH] = self.state[CASH] + self.bpt()
 
-    def makeBox(self) -> None:
+    def make_box(self) -> None:
         """Function will make a single box"""
         self.state[CASH] = self.state[CASH] + 1
 
-    def getPurchasableGenerators(self) -> list:
+    def get_purchasable_generators(self) -> list:
         """Show all generators that the player can buy at any time
 
         Player must own at least 1 of the UNLOCK_ON requirement to unlock the other
         """
-        owned_generators = [generator["ID"] for generator in self.getGenerators()]
+        owned_generators = [generator["ID"] for generator in self.get_generators()]
 
         purchasable_generators = []
         for generator in self.available_generators:
@@ -260,9 +260,9 @@ class GameState:
         # TODO in the future it maybe shouldn't just return the IDs of the generators
         return purchasable_generators
 
-    def getPurchasableUpgrades(self) -> list:
+    def get_purchasable_upgrades(self) -> list:
         """Show all of the upgrades the player can buy that they don't already own"""
-        owned_upgrades = [upgrade["ID"] for upgrade in self.getUpgrades()]
+        owned_upgrades = [upgrade["ID"] for upgrade in self.get_upgrades()]
 
         purchasable_upgrades = []
         for upgrade in self.available_upgrades:
@@ -274,12 +274,12 @@ class GameState:
             for requirement in upgrade_requirements:
                 requirement_type = requirement.get("type", None)
                 if requirement_type == "CURRENCY" and (
-                    self.getCash() - requirement.get("amount") < 0
+                        self.get_cash() - requirement.get("amount") < 0
                 ):
                     display_upgrade = False
                 elif (
                     requirement_type == "GENERATOR"
-                    and requirement.get("id", None) not in self.getGenerators()
+                    and requirement.get("id", None) not in self.get_generators()
                 ):
                     display_upgrade = False
             if display_upgrade is True:
@@ -287,27 +287,27 @@ class GameState:
 
         return purchasable_upgrades
 
-    def getState(self) -> None:
+    def get_state(self) -> None:
         """Get the current state of the game as a dict"""
         return self.state
 
-    def getCash(self) -> int:
+    def get_cash(self) -> int:
         """Getter function for cash"""
         return self.state[CASH]
 
-    def getGenerators(self) -> list:
+    def get_generators(self) -> list:
         """Getter functon for generators list that the user unlocked"""
         return self.state[GENERATORS]
 
-    def getUpgrades(self) -> list:
+    def get_upgrades(self) -> list:
         """Getter functon for upgrades list that the user unlocked"""
         return self.state[UPGRADES]
 
-    def getAchievements(self) -> list:
+    def get_achievements(self) -> list:
         """Getter functon for achievements list that the user unlocked"""
         return self.state[ACHIEVEMENTS]
 
-    def earnAchievement(self, id: str) -> None:
+    def earn_achievement(self, id: str) -> None:
         """Mark achievement as earned."""
         self.state["achievements"].append(id)
         self.earnable_achievements = [item for item in self.earnable_achievements if item["ID"] != id]

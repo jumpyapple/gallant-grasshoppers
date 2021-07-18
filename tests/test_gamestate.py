@@ -10,15 +10,15 @@ class GameStateTest(unittest.TestCase):
         """Generic Game Setup"""
         # print('I know Im creating a new game every test... its been a while... :)')
         self.Game = GameState()
-        self.Game.state = self.Game.newGame()
+        self.Game.state = self.Game.new_game()
         # return super().setUp()
 
     def test_ticker(self) -> None:
         """Make sure the increment works"""
-        self.assertEqual(self.Game.getCash(), 0)
+        self.assertEqual(self.Game.get_cash(), 0)
         for _ in range(5):
-            self.Game.makeBox()
-        self.assertEqual(self.Game.getCash(), 5)
+            self.Game.make_box()
+        self.assertEqual(self.Game.get_cash(), 5)
 
     def test_isDataLoaded(self) -> None:
         """Check if the loader is working for GameState"""
@@ -44,43 +44,43 @@ class GameStateTest(unittest.TestCase):
 
     def test_changeCash(self) -> None:
         """Be able to inject extra cash into the players account but not go below zero"""
-        self.assertEqual(self.Game.getCash(), 0)
-        self.Game.changeCash(1000)
-        self.assertEqual(self.Game.getCash(), 1000)
-        self.Game.changeCash(-2000)
-        self.assertEqual(self.Game.getCash(), 1000)
-        self.Game.changeCash(-500)
-        self.assertEqual(self.Game.getCash(), 500)
+        self.assertEqual(self.Game.get_cash(), 0)
+        self.Game.change_cash(1000)
+        self.assertEqual(self.Game.get_cash(), 1000)
+        self.Game.change_cash(-2000)
+        self.assertEqual(self.Game.get_cash(), 1000)
+        self.Game.change_cash(-500)
+        self.assertEqual(self.Game.get_cash(), 500)
 
     def test_purchasableGenerators(self) -> None:
         """Should only show the basic generators unlocked from the start"""
-        self.assertEqual(len(self.Game.getGenerators()), 0)
-        self.assertEqual(len(self.Game.getPurchasableGenerators()), 2)
+        self.assertEqual(len(self.Game.get_generators()), 0)
+        self.assertEqual(len(self.Game.get_purchasable_generators()), 2)
 
     def test_buyGenerator(self) -> None:
         """Try buying upgrades"""
-        self.Game.changeCash(10000)
-        generator_to_buy = self.Game.getPurchasableGenerators()[0]
+        self.Game.change_cash(10000)
+        generator_to_buy = self.Game.get_purchasable_generators()[0]
         generator_to_buy_id = generator_to_buy["ID"]
-        self.assertEqual(len(self.Game.getGenerators()), 0)
-        self.Game.buyGenerator(generator_to_buy_id)
-        self.assertEqual(len(self.Game.getGenerators()), 1)
+        self.assertEqual(len(self.Game.get_generators()), 0)
+        self.Game.buy_generator(generator_to_buy_id)
+        self.assertEqual(len(self.Game.get_generators()), 1)
         # print(self.Game.getGenerators())
 
     def test_buyUpgradeTwo(self) -> None:
         """Try buying some upgrades"""
-        self.Game.changeCash(20000)
-        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 0)
-        purchasable_generators = self.Game.getPurchasableGenerators()
+        self.Game.change_cash(20000)
+        self.assertEqual(len(self.Game.get_purchasable_upgrades()), 0)
+        purchasable_generators = self.Game.get_purchasable_generators()
         generator_to_buy1 = purchasable_generators[0]
         generator_to_buy2 = purchasable_generators[1]
-        self.Game.buyGenerator(generator_to_buy1["ID"])
+        self.Game.buy_generator(generator_to_buy1["ID"])
 
-        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 1)
+        self.assertEqual(len(self.Game.get_purchasable_upgrades()), 1)
 
-        self.Game.buyGenerator(generator_to_buy2["ID"])
+        self.Game.buy_generator(generator_to_buy2["ID"])
 
-        self.assertEqual(len(self.Game.getPurchasableUpgrades()), 2)
+        self.assertEqual(len(self.Game.get_purchasable_upgrades()), 2)
 
 
 if __name__ == "__main__":

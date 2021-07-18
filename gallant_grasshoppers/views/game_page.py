@@ -82,7 +82,7 @@ class GamePage(BasePage):
         right_half.set_wh(self.main.width // 2, self.main.height)
         right_half.set_styles({"border": True})
 
-        current_cash = self.state.getCash()
+        current_cash = self.state.get_cash()
         curr_string = f"Boxes Folded: {current_cash}"
 
         self.c = Component(
@@ -102,7 +102,7 @@ class GamePage(BasePage):
 
     def render(self) -> None:
         """Render the game page."""
-        current_cash = self.state.getCash()
+        current_cash = self.state.get_cash()
         curr_string = f"Boxes Folded: {current_cash}"
         self.c.set_children([curr_string])
 
@@ -113,13 +113,13 @@ class GamePage(BasePage):
         nav_menu = ["1", "2", "3", "4"]
         game_menu = ["q", "w", "e", "r"]
         if key == " ":
-            self.state.makeBox()
+            self.state.make_box()
         if key in nav_menu:
             self.renderstate["current_menu"] = self.menus[nav_menu.index(key)]
         if key in game_menu:
-            self.state.buyGenerator(self.current_options[game_menu.index(key)]['ID'])
+            self.state.buy_generator(self.current_options[game_menu.index(key)]['ID'])
         if key == "5":
             # Save the session.
-            self.state.saveGame()
+            self.state.save_game()
             self.renderstate["is_exiting"] = True
             self.renderstate["is_in_game"] = False
