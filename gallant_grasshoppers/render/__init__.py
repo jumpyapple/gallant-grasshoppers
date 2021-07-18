@@ -1,10 +1,7 @@
 from blessed import Terminal
 
-from .component import Component, PopupMessage, PopupPrompt  # noqa: F401
-from .utils.get_selectables import get_selectables  # noqa: F401
-from .utils.terminal import get_term
+term = Terminal()
 
-
-def terminal() -> Terminal:
-    """Gets Terminal"""
-    return get_term()
+# E402 is needed for circular import.
+from .component import Component, PopupMessage, PopupPrompt  # noqa: F401, E402
+from .utils.get_selectables import get_selectables  # noqa: F401, E402

@@ -7,7 +7,7 @@ from render.component import Component, PopupMessage
 from views import StartPage
 
 DEBUG = True
-term = r.terminal()
+term = r.term
 
 
 def should_get_currency_achievement(achievement: dict, state: GameState) -> bool:
@@ -91,10 +91,6 @@ def main() -> None:
                     popup.render()
 
                 key_press = term.inkey(timeout=.5)
-
-                # TODO: jumpyapple - Add a trap for ESC key.
-                # This may have to be in each page since ESC may be used to dismiss
-                # sub-menu/dialog/etc.
 
                 # If there is a popup, it will receive the input first.
                 if popup and not popup.auto_dismiss:

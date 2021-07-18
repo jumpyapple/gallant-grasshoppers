@@ -5,10 +5,10 @@ from typing import Any, Callable, Union
 from blessed import Terminal
 from blessed.formatters import FormattingString, NullCallableString
 from blessed.keyboard import Keystroke
+from render import term
 from render.utils import StateManager
 
 from .styleTypes import bg_color, color, styles
-from .utils.terminal import get_term as terminal
 
 
 class Component:
@@ -45,7 +45,7 @@ class Component:
             IF STR: put in list to be displayed on single line. i.e. ["Hello World!"]
             (Default is None)
         """
-        self.terminal = terminal()
+        self.terminal = term
         self.height = self.terminal.height
         self.width = self.terminal.width
         self.begin_y = begin_y

@@ -1,4 +1,4 @@
-from ..utils.terminal import term
+from render import term
 
 
 def color(component: object, param: any = None) -> str:

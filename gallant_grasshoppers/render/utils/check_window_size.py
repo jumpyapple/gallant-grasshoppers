@@ -1,6 +1,4 @@
-from .terminal import get_term as terminal
-
-term = terminal()
+from render import term
 
 
 def check_window_size() -> None:
